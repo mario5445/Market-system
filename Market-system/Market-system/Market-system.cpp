@@ -1,12 +1,12 @@
 #include <iostream>
+#include <string>
 #include <fstream>
 
 using namespace std;
 
-
 void mainMenu() {
 	// funkcia ktora vypise hlavne menu
-	cout << "•••••••••••Hlavne menu•••••••••••" << endl;
+	cout << "++++++  Hlavne menu  ++++++" << endl;
 	cout << "\t[1] Nablokovat produkty" << endl;
 	cout << "\t[2] Pridat produkt" << endl;
 	cout << "\t[3] Odstranit produkt" << endl;
@@ -25,7 +25,7 @@ void exitFunc() {
 }
 
 void loginSystem() {
-	cout << "**Najskor sa prihlas, ak chces pokracovat**" << endl;
+	cout << "*** Najskor sa prihlaste, ak chcete pokracovat ***" << endl;
 	int counter = 0; // pomocou counteru program vie ci ma overit login alebo heslo
 	ifstream fin; // ifstream - subor je len na citanie
 	fin.open("AdminLogin.txt");
@@ -47,9 +47,7 @@ void loginSystem() {
 			if (counter == 0) // program sa rozhodne na zaklade counteru, co skontroluje
 			{
 				if (arra == loginstr) // kedze ideme v textovom subore po riadkoch tak najskor musi skontrolovat login
-				{
 					counter++; // inkrementacia counteru
-				}
 				else
 				{
 					/*
@@ -65,9 +63,7 @@ void loginSystem() {
 			else if(counter == 1)
 			{
 				if (arra == passwordstr) // program skontroluje heslo
-				{
 					break; // counter sa uz neinkrementuje ale pomocou break sa dostaneme von z cyklu
-				}
 				else
 				{
 					// tato cast sa spusti ak je nespravne heslo
@@ -105,7 +101,42 @@ int main() {
 	// uvitanie pouzivatela
 	cout << "~~~~~~~Vitajte v nasom market systeme~~~~~~~" << endl;
 	cout << ":::::::Vyberte prosim, co chete robit:::::::" << endl << endl << "---------------------------------------------" << endl << endl;
+	string menuInput; // vytvorenie premennej na uskladnenie inputu
+	int intMenuInput; // vytvorenie premennej na uskladnenie inputu vo forme int
 	// zavolanie hlavneho menu
-	mainMenu();
+	while (true)
+	{
+		mainMenu();
+		cout << "Vas vyber -> ";
+		while (true) // cyklus na kontrolu exception
+		{
+			cin >> menuInput; // input od uzivatela
+			try // exception
+			{
+				intMenuInput = stoi(menuInput); // konverzia stringu na int  
+				if (intMenuInput >= 1 && intMenuInput <= 7) // kontrola, ci je cislo v intervale od 1 po 7
+					break; // opustenie cyklu
+				else
+				{
+					// v pripade nesplnenej podmienky
+					// chybova hlaska
+					cout << "Nespravny input" << endl;
+					cout << "Zadaj svoj vyber znova -> ";
+					continue; // navrat na zaciatok cyklu
+				}
+			}
+			catch (...) // zachytenie errorov napriklad pri konverzii
+			{
+				// chybova hlaska
+				cout << "Nespravny input" << endl;
+				cout << "Zadaj svoj vyber znova -> ";
+				continue; // navrat na zaciatok cyklu
+			}
+		}
+		if (true)
+		{
+			break;
+		}
+	}
 	return 0;
 }
