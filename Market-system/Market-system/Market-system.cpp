@@ -20,13 +20,16 @@ void mainMenu() {
 
 void exitFunc() {
 	// funkcia ktora vypne program
+	system("CLS");
 	cout << "/*--*/ Dovidenia /*--*/";
 	exit(0);
 }
 
 void removeProduct() {
+	system("CLS");
 	ifstream fin;
-	fin.open("produkty.txt");
+	ifstream fil;
+	fin.open("Produkty.txt");
 	ofstream temp;
 	temp.open("temp.txt");
 	cout << "%%%%%% Vymazanie produktu %%%%%%" << endl << endl;
@@ -38,24 +41,42 @@ void removeProduct() {
 		{
 			cout << line << endl;
 		}
-		string userInput;
-		string lin;
-		cout << "Zadaj nazov produktu: ";
-		cin >> userInput;
-		while(getline(fin, lin))
-		{
-			if (lin.substr(0, userInput.size()) != userInput) {
-				temp << lin << endl;
-			}
-		}
 		fin.close();
-		temp.close();
-		remove("produkty.txt");
-		rename("temp.txt", "produkty.txt");
-		if (fin.is_open() && temp.is_open())
+		if (fin.is_open())
 		{
 			system("CLS");
 			cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
+			exit(0);
+		}
+		fil.open("Produkty.txt");
+		if (fil.is_open())
+		{
+			string userInput;
+			string lin;
+			cout << "Zadaj nazov produktu: ";
+			cin >> userInput;
+			while (getline(fil, lin))
+			{
+				if (lin.substr(0, (userInput+"\t").size()) != userInput+"\t") {
+					temp << lin << endl;
+				}
+			}
+			fil.close();
+			temp.close();
+			remove("Produkty.txt");
+			rename("temp.txt", "Produkty.txt");
+			if (fil.is_open() && temp.is_open())
+			{
+				system("CLS");
+				cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
+				exit(0);
+			}
+		}
+		else
+		{
+			// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
+			system("CLS");
+			cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
 			exit(0);
 		}
 	}
@@ -66,7 +87,7 @@ void removeProduct() {
 		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
 		exit(0);
 	}
-	
+	system("CLS");
 }
 
 void loginSystem() {
@@ -181,6 +202,11 @@ int main() {
 		if (intMenuInput == 3)
 		{
 			removeProduct();
+			continue;
+		}
+		else if(intMenuInput == 7)
+		{
+			exitFunc();
 			break;
 		}
 	}
