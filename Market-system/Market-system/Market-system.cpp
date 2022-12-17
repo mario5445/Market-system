@@ -6,7 +6,7 @@ using namespace std;
 
 void mainMenu() {
 	// funkcia ktora vypise hlavne menu
-	cout << "++++++  Hlavne menu  ++++++" << endl;
+	cout << "+++++++  Hlavne menu  +++++++" << endl;
 	cout << "\t[1] Nablokovat produkty" << endl;
 	cout << "\t[2] Pridat produkt" << endl;
 	cout << "\t[3] Odstranit produkt" << endl;
@@ -21,54 +21,76 @@ void mainMenu() {
 void exitFunc() {
 	// funkcia ktora vypne program
 	system("CLS");
-	cout << "/*--*/ Dovidenia /*--*/";
+	cout << "/*--*/ Dovidenia /*--*/" << endl << endl;
 	exit(0);
 }
 
 void removeProduct() {
 	system("CLS");
-	ifstream fin;
+	ifstream fin; // vytvorenie dvoch istreamov na citanie suborov
 	ifstream fil;
-	fin.open("Produkty.txt");
-	ofstream temp;
-	temp.open("temp.txt");
-	cout << "%%%%%% Vymazanie produktu %%%%%%" << endl << endl;
-	cout << "Zoznam produktov: " << endl;
-	string line;
-	if(fin.is_open() && temp.is_open())
+	ofstream temp; // vytvorenie ofstreamu na zapisovanie do suboru
+	fin.open("Produkty.txt"); // otvorenie suboru ifstreamom
+	temp.open("temp.txt"); // otvorenie suboru ofstreamom
+	cout << "!!!!!! Vymazanie produktu !!!!!!" << endl << endl; // info pre uzivatela
+	cout << "Zoznam produktov: " << endl << endl; // vypisanie produktov
+	if(fin.is_open()) // kontrola, ci je subor otvoreny
 	{
-		while (getline(fin, line))
+		if (temp.is_open()) // kontrola ci je subor otvoreny
 		{
-			cout << line << endl;
-		}
-		fin.close();
-		if (fin.is_open())
-		{
-			system("CLS");
-			cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
-			exit(0);
-		}
-		fil.open("Produkty.txt");
-		if (fil.is_open())
-		{
-			string userInput;
-			string lin;
-			cout << "Zadaj nazov produktu: ";
-			cin >> userInput;
-			while (getline(fil, lin))
+			string line; // vytvorenie pomocnej premennej specialne pre funkciu getline
+			while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
 			{
-				if (lin.substr(0, (userInput+"\t").size()) != userInput+"\t") {
-					temp << lin << endl;
+				// vypisovanie jednotlivych riadkov
+				cout << "\t" << line << endl;
+			}
+			fin.close(); // zatvorenie suboru
+			if (fin.is_open()) // kontorola ci je subor zatvoreny
+			{
+				// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+				system("CLS");
+				temp.close();
+				cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
+				exit(0);
+			}
+			// otvorenie suboru druhym ifstreamom
+			fil.open("Produkty.txt");
+			if (fil.is_open()) // kontrola ci je subor otvoreny
+			{
+				string userInput; // vytvorenie premennej typu string na uskladnenie inputu od pouzivatela
+				cout << endl << "Zadajte nazov produktu: "; // info pre pouzivatela
+				cin >> userInput; // ulozenie inputu do premennej
+				while (getline(fil, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
+				{
+					// podmienka ktora zisti ci riadok obsahuje alebo neobsahuje produkt ktory chce pouzivatel odstranit
+					if (line.substr(0, (userInput + "\t").size()) != userInput + "\t") 
+						temp << line << endl; // zapisanie riadku do docasneho suboru temp.txt pokial neobsahuje produkt ktory chce uzivatel zmazat
+				}
+				fil.close(); // zatvorenie suboru Produkty.txt
+				temp.close(); // zatvorenie suboru temp.txt
+				remove("Produkty.txt"); // odstranenie suboru
+				rename("temp.txt", "Produkty.txt"); // premenovanie suboru temp.txt na Produkty.txt
+				if (fil.is_open()) // kontrola ci je subor zatvoreny
+				{
+					// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+					system("CLS");
+					cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
+					exit(0);
+				}
+				if (temp.is_open()) // kontrola ci je subor zatvoreny
+				{
+					// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+					system("CLS");
+					cout << "Fatal error > Subor temp.txt sa nepodarilo zatvorit" << endl;
+					exit(0);
 				}
 			}
-			fil.close();
-			temp.close();
-			remove("Produkty.txt");
-			rename("temp.txt", "Produkty.txt");
-			if (fil.is_open() && temp.is_open())
+			else
 			{
+				// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
 				system("CLS");
-				cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
+				cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
+				temp.close();
 				exit(0);
 			}
 		}
@@ -76,8 +98,52 @@ void removeProduct() {
 		{
 			// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
 			system("CLS");
-			cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
+			fin.close();
+			cout << "Fatal error > Subor temp.txt sa nepodarilo otvorit" << endl;
 			exit(0);
+		}
+	}
+	else
+	{
+		// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
+		system("CLS");
+		temp.close();
+		cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
+		exit(0);
+	}
+	system("CLS");
+}
+
+void changeLoginData() {
+	system("CLS"); 
+	cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl; // maly GUI prvok
+	cout << "!!!!!!! Zmena prihlasovacich udajov !!!!!!!" << endl; // upozornenie pre uzivatela
+	cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl << endl;
+	ofstream temp; // vytvorenie noveho ostreamu
+	temp.open("temp.txt"); // otvorenie suboru ofstreamom
+	if (temp.is_open()) // kontrola ci je subor otvoreny
+	{
+		string loginData; // vytvorenie dvoch premenny na uskladnenie inputu od uzivatela
+		string passwordData;
+		cout << "Zadajte novy login: "; // vypytanie si loginu od uzivatela
+		cin >> loginData;  // ulozenie inputu do jednej z premennych
+		cout << "Zadajte nove heslo: "; // vypytanie si hesla od uzivatela
+		cin >> passwordData; // uskladnenie inputu do jednej z premennych
+		temp << loginData << endl; // zapisanie loginu do suboru temp.txt
+		temp << passwordData; // zapisanie hesla do suboru temp.txt
+		temp.close(); // zatvorenie suboru
+		if (temp.is_open()) // kontrola ci je subor zatvoreny
+		{
+			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+			system("CLS");
+			cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
+			cout << "Udaje sa nepodarilo zmenit" << endl;
+			exit(0);
+		}
+		else
+		{
+			remove("AdminLogin.txt"); // odstranenie povodneho suboru AdminLogin.txt
+			rename("temp.txt", "AdminLogin.txt"); // premenovanie docasneho suboru temp.txt na AdminLogin.txt
 		}
 	}
 	else
@@ -89,6 +155,7 @@ void removeProduct() {
 	}
 	system("CLS");
 }
+
 
 void loginSystem() {
 	cout << "*** Najskor sa prihlaste, ak chcete pokracovat ***" << endl;
@@ -166,20 +233,19 @@ int main() {
 	loginSystem();
 	// uvitanie pouzivatela
 	cout << "~~~~~~~Vitajte v nasom market systeme~~~~~~~" << endl;
-	cout << ":::::::Vyberte prosim, co chete robit:::::::" << endl << endl << "---------------------------------------------" << endl << endl;
-	string menuInput; // vytvorenie premennej na uskladnenie inputu
+	cout << ":::::::Vyberte prosim, co chete robit:::::::" << endl << endl << "--------------------------------------------" << endl << endl;
 	int intMenuInput; // vytvorenie premennej na uskladnenie inputu vo forme int
-	// zavolanie hlavneho menu
+	string strmenuInput; // vytvorenie premennej na uskladnenie inputu vo forme stringu
 	while (true)
 	{
-		mainMenu();
+		mainMenu(); // zavolanie hlavneho menu
 		cout << "Vas vyber -> ";
 		while (true) // cyklus na kontrolu exception
 		{
-			cin >> menuInput; // input od uzivatela
+			cin >> strmenuInput; // input od uzivatela
 			try // exception
 			{
-				intMenuInput = stoi(menuInput); // konverzia stringu na int  
+				intMenuInput = stoi(strmenuInput); // konverzia stringu na int  
 				if (intMenuInput >= 1 && intMenuInput <= 7) // kontrola, ci je cislo v intervale od 1 po 7
 					break; // opustenie cyklu
 				else
@@ -201,12 +267,16 @@ int main() {
 		}
 		if (intMenuInput == 3)
 		{
-			removeProduct();
-			continue;
+			removeProduct(); // zavloanie funkcie na vymazanie produktu
+			continue; // navrat na zaciatok cyklu
+		}
+		else if (intMenuInput == 6)
+		{
+			changeLoginData(); // zavolanie funkcie na zmenu prihlasovacich udajov
 		}
 		else if(intMenuInput == 7)
 		{
-			exitFunc();
+			exitFunc(); // zavolanie funkcie na vypnutie programu
 			break;
 		}
 	}
