@@ -13,6 +13,8 @@ string getLastCharacters(string str, int n) {
 
 int main() {
 	/*
+
+	// provizorna funkcia na ziskanie ceny zo suboru
 	fstream strm;
 	strm.open("Test.txt", ios::in);
 	if (strm.is_open())
@@ -45,7 +47,9 @@ int main() {
 		}
 		strm.close();
 		char arra[100];
+		// koniec funkcie
 		
+		// funkcia na odstranenie produktu zo zoznamu
 		ifstream fin;
 		fin.open("Test.txt");
 		ofstream temp;
@@ -63,8 +67,10 @@ int main() {
 		temp.close();
 		remove("Test.txt");
 		rename("temp.txt", "Test.txt");
+		// koniec funkcie
 	}*/
 	
+	// regexy
 	string num = "09.54";
 	string reg = R"(\d{2}(\.\d{2}))";
 	string reg2 = R"(\d\d\.\d\d)";
