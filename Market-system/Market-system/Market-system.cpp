@@ -24,6 +24,51 @@ void exitFunc() {
 	exit(0);
 }
 
+void removeProduct() {
+	ifstream fin;
+	fin.open("produkty.txt");
+	ofstream temp;
+	temp.open("temp.txt");
+	cout << "%%%%%% Vymazanie produktu %%%%%%" << endl << endl;
+	cout << "Zoznam produktov: " << endl;
+	string line;
+	if(fin.is_open() && temp.is_open())
+	{
+		while (getline(fin, line))
+		{
+			cout << line << endl;
+		}
+		string userInput;
+		string lin;
+		cout << "Zadaj nazov produktu: ";
+		cin >> userInput;
+		while(getline(fin, lin))
+		{
+			if (lin.substr(0, userInput.size()) != userInput) {
+				temp << lin << endl;
+			}
+		}
+		fin.close();
+		temp.close();
+		remove("produkty.txt");
+		rename("temp.txt", "produkty.txt");
+		if (fin.is_open() && temp.is_open())
+		{
+			system("CLS");
+			cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
+			exit(0);
+		}
+	}
+	else
+	{
+		// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
+		system("CLS");
+		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
+		exit(0);
+	}
+	
+}
+
 void loginSystem() {
 	cout << "*** Najskor sa prihlaste, ak chcete pokracovat ***" << endl;
 	int counter = 0; // pomocou counteru program vie ci ma overit login alebo heslo
@@ -133,8 +178,9 @@ int main() {
 				continue; // navrat na zaciatok cyklu
 			}
 		}
-		if (true)
+		if (intMenuInput == 3)
 		{
+			removeProduct();
 			break;
 		}
 	}
