@@ -6,17 +6,16 @@ using namespace std;
 
 void mainMenu() {
 	// funkcia ktora vypise hlavne menu
-	cout << "+++++++  Hlavne menu  +++++++" << endl;
+	cout << "++++++++  Hlavne menu  ++++++++" << endl;
 	cout << "\t[1] Nablokovat produkty" << endl;
 	cout << "\t[2] Pridat produkt" << endl;
 	cout << "\t[3] Odstranit produkt" << endl;
 	cout << "\t[4] Upravit produkt" << endl;
-	cout << "\t[5] Zmenit udaje pre nakupne doklady" << endl;
+	cout << "\t[5] Zmenit udaje pre blocky" << endl;
 	cout << "\t[6] Zmenit prihlasovacie udaje" << endl;
 	cout << "\t[7] Exit" << endl << endl;
 	cout << "Pre pokracovanie zvolte jedno z cisel v hranatych zatvorkach" << endl;
 }
-
 
 void exitFunc() {
 	// funkcia ktora vypne program
@@ -114,16 +113,25 @@ void removeProduct() {
 	system("CLS");
 }
 
-void changeLoginData() {
+void changeLoginData(int len) {
 	system("CLS"); 
-	cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl; // maly GUI prvok
-	cout << "!!!!!!! Zmena prihlasovacich udajov !!!!!!!" << endl; // upozornenie pre uzivatela
-	cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl << endl;
+	if (len != 0)
+	{
+		cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl; // maly GUI prvok
+		cout << "!!!!!!! Zmena prihlasovacich udajov !!!!!!!" << endl; // upozornenie pre uzivatela
+		cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl << endl;
+	}
+	else
+	{
+		cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+		cout << "  Nastavenie novych prihlasovacich udajov  " << endl;
+		cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+	}
 	ofstream temp; // vytvorenie noveho ostreamu
 	temp.open("temp.txt"); // otvorenie suboru ofstreamom
 	if (temp.is_open()) // kontrola ci je subor otvoreny
 	{
-		string loginData; // vytvorenie dvoch premenny na uskladnenie inputu od uzivatela
+		string loginData; // vytvorenie dvoch premennych na uskladnenie inputu od uzivatela
 		string passwordData;
 		cout << "Zadajte novy login: "; // vypytanie si loginu od uzivatela
 		cin >> loginData;  // ulozenie inputu do jednej z premennych
@@ -155,7 +163,6 @@ void changeLoginData() {
 	}
 	system("CLS");
 }
-
 
 void loginSystem() {
 	cout << "*** Najskor sa prihlaste, ak chcete pokracovat ***" << endl;
@@ -230,7 +237,19 @@ void loginSystem() {
 
 int main() {
 	// zavolanie funkcie na prihlasenie do systemu
-	loginSystem();
+	ifstream fil; // ifstream - subor je len na citanie
+	fil.open("AdminLogin.txt"); // otvorenie suboru s prihlasovacimi udajmi
+	fil.seekg(0, ios::end); // ukazuje na koniec suboru
+	int len = fil.tellg(); // ak je subor prazdny vrati 0
+	fil.close(); // zatvorenie suboru
+	if (len != 0) // kontrola ci je subor prazdny
+	{
+		loginSystem();
+	}
+	else
+	{
+		changeLoginData(len);
+	}
 	// uvitanie pouzivatela
 	cout << "~~~~~~~Vitajte v nasom market systeme~~~~~~~" << endl;
 	cout << ":::::::Vyberte prosim, co chete robit:::::::" << endl << endl << "--------------------------------------------" << endl << endl;
@@ -272,7 +291,8 @@ int main() {
 		}
 		else if (intMenuInput == 6)
 		{
-			changeLoginData(); // zavolanie funkcie na zmenu prihlasovacich udajov
+			changeLoginData(len); // zavolanie funkcie na zmenu prihlasovacich udajov
+			continue; // navrat na zaciatok cyklu
 		}
 		else if(intMenuInput == 7)
 		{
