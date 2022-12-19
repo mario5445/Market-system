@@ -5,3 +5,4 @@ cukor			0.55
 dzus			1.29
 maslo			3.50
 cokolada		0.99
+muka			0.58
