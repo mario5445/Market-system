@@ -21,21 +21,19 @@ void exitFunc() {
 	// funkcia ktora vypne program
 	system("CLS");
 	cout << "/*--*/ Dovidenia /*--*/" << endl;
-	cout << "\\___/            \\___/" << endl << endl;
 	exit(0);
 }
 
 void removeProduct() {
 	system("CLS");
-	ifstream fin; // vytvorenie dvoch istreamov na citanie suborov
-	ifstream fil;
-	ofstream temp; // vytvorenie ofstreamu na zapisovanie do suboru
+	ifstream fin; // ifstream na citanie suboru
+	ofstream temp; // ofstream na zapisovanie do suboru
 	fin.open("Produkty.txt"); // otvorenie suboru ifstreamom
 	cout << "!!!!!! Vymazanie produktu !!!!!!" << endl << endl; // info pre uzivatela
 	cout << "Zoznam produktov: " << endl << endl; // vypisanie produktov
 	if(fin.is_open()) // kontrola, ci je subor otvoreny
 	{
-		string line; // vytvorenie pomocnej premennej specialne pre funkciu getline
+		string line; // premenna pre funkciu getline
 		while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
 		{
 			// vypisovanie jednotlivych riadkov
@@ -56,20 +54,20 @@ void removeProduct() {
 		if (temp.is_open()) // kontrola ci je subor otvoreny
 		{
 			// otvorenie suboru druhym ifstreamom
-			fil.open("Produkty.txt");
-			if (fil.is_open()) // kontrola ci je subor otvoreny
+			fin.open("Produkty.txt");
+			if (fin.is_open()) // kontrola ci je subor otvoreny
 			{	
-				while (getline(fil, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
+				while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
 				{
 					// podmienka ktora zisti ci riadok obsahuje alebo neobsahuje produkt ktory chce pouzivatel odstranit
 					if (line.substr(0, (userInput + "\t").size()) != userInput + "\t") 
 						temp << line << endl; // zapisanie riadku do docasneho suboru temp.txt pokial neobsahuje produkt ktory chce uzivatel zmazat
 				}
-				fil.close(); // zatvorenie suboru Produkty.txt
+				fin.close(); // zatvorenie suboru Produkty.txt
 				temp.close(); // zatvorenie suboru temp.txt
 				remove("Produkty.txt"); // odstranenie suboru
 				rename("temp.txt", "Produkty.txt"); // premenovanie suboru temp.txt na Produkty.txt
-				if (fil.is_open() || temp.is_open()) // kontrola ci je subor zatvoreny
+				if (fin.is_open() || temp.is_open()) // kontrola ci je subor zatvoreny
 				{
 					// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
 					system("CLS");
@@ -157,7 +155,7 @@ void changeLoginData(bool isEmpty) {
 }
 
 void loginSystem() {
-	cout << "*** Najskor sa prihlaste, ak chcete pokracovat ***" << endl;
+	cout << "*** Najskor sa prihlaste, ak chcete pokracovat ***" << endl << endl;
 	int counter = 0; // pomocou counteru program vie ci ma overit login alebo heslo
 	ifstream fin; // ifstream - subor je len na citanie
 	// Premenne na ulozenie inputov
@@ -227,31 +225,79 @@ void loginSystem() {
 	system("CLS");
 }
 
-int main() {
-	// zavolanie funkcie na prihlasenie do systemu
-	ifstream fil; // ifstream - subor je len na citanie
-	fil.open("AdminLogin.txt"); // otvorenie suboru s prihlasovacimi udajmi
-	if (fil.is_open())
+int checkFileLines(string fileName) {
+	ifstream fil; // ifstream na citanie suboru
+	fil.open(fileName); // otvorenie suboru
+	if (!fil.is_open()) // kontrola ci je subor otvoreny
 	{
-		fil.seekg(0, ios::end); // ukazuje na koniec suboru
-		int len = fil.tellg(); // ak je subor prazdny vrati 0
-		fil.close(); // zatvorenie suboru
-		if (len != 0) // kontrola ci je subor prazdny
-			loginSystem();
-		else
-			changeLoginData(true);
-	}
-	else
-	{
+		// chybova hlaska
 		system("CLS");
 		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
 		exit(0);
 	}
+	int counter = 0; // counter na pocitanie riadkov v subore
+	string line; // premenna na ulozenie riadku 
+	while (getline(fil, line))
+	{
+		if (line!="" || line!= "\n") // overenie ci nie je riadok prazdny
+		{
+			counter++; // inkrementacia counteru
+		}
+	}
+	fil.close(); // zatvorenie suboru
+	if (fil.is_open()) // kontrola ci je subor zatvoreny
+	{
+		// chybova hlaska
+		system("CLS");
+		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
+		exit(0);
+	}
+	if (counter < 2) // kontrola ci ma subor 1 riadok a menej
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+int checkIfFileIsEmpty(string fileName) {
+	ifstream fil;
+	fil.open(fileName);
+	if (!fil.is_open())
+	{
+		// chybova hlaska
+		system("CLS");
+		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
+		exit(0);
+	}
+	fil.seekg(0, ios::end);
+	int len = fil.tellg();
+	fil.close();
+	if (fil.is_open())
+	{
+		// chybova hlaska
+		system("CLS");
+		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
+		exit(0);
+	}
+	return len;
+}
+
+int main() {
+	int isFileEmpty = checkIfFileIsEmpty("AdminLogin.txt");
+	int filLineCount = checkFileLines("AdminLogin.txt");
+	if (isFileEmpty != 0 && filLineCount != 0) // kontrola ci je subor prazdny
+		loginSystem();
+	else
+		changeLoginData(true);
+
 	// uvitanie pouzivatela
 	cout << "~~~~~~~Vitajte v nasom market systeme~~~~~~~" << endl;
 	cout << ":::::::Vyberte prosim, co chete robit:::::::" << endl << endl << "--------------------------------------------" << endl << endl;
-	int intMenuInput; // vytvorenie premennej na uskladnenie inputu vo forme int
-	string strmenuInput; // vytvorenie premennej na uskladnenie inputu vo forme stringu
+	int intMenuInput; // premenna na uskladnenie inputu vo forme intu
+	string strmenuInput; // premenna na uskladnenie inputu vo forme stringu
 	while (true)
 	{
 		mainMenu(); // zavolanie hlavneho menu
