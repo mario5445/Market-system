@@ -3,7 +3,7 @@ mlieko			1.00
 chlieb			1.10
 cukor			0.55
 dzus			1.29
-cokolada		0.99
-muka			0.58
 maslo			3.50
 rozky			0.10
+muka			0.58
+cokolada			1.00
