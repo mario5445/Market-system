@@ -24,6 +24,80 @@ void exitFunc() {
 	exit(0);
 }
 
+
+void addProduct() {
+	system("CLS");
+	fstream fil;
+	string userProductName;
+	string userProductPrice;
+	
+	cout << "++++++++++++++++++++++++++++++" << endl;
+	cout << "|| Pridanie noveho produktu ||" << endl;
+	cout << "++++++++++++++++++++++++++++++" << endl << endl;
+
+	cout << "Zadajte nAzov produktu: ";
+	cin >> userProductName;
+	cout << "Zadajte cenu noveho produktu: ";
+	cin >> userProductPrice;
+
+	fil.open("Produtky.txt", ios::in);
+	if (!fil.is_open())
+	{
+		// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+		system("CLS");
+		cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
+		exit(0);
+	}
+
+	string line;
+	bool isDuplicate = false;
+
+	while (getline(fil, line))
+	{
+		if (line.substr(0, (userProductName + "\t").size()) == (userProductName + "\t"))
+		{
+			cout << "Produkt uz je v zozname" << endl;
+			isDuplicate = true;
+			break;
+		}
+	}
+
+	fil.close();
+	if (fil.is_open())
+	{
+		// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+		system("CLS");
+		cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
+		exit(0);
+	}
+	
+	if (!isDuplicate)
+	{
+		fil.open("Produkty.txt", ios::app);
+		if (!fil.is_open())
+		{
+			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+			system("CLS");
+			cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
+			exit(0);
+		}
+		fil << userProductName << "\t\t\t" << userProductPrice << endl;
+		fil.close();
+		if (fil.is_open())
+		{
+			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+			system("CLS");
+			cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
+			exit(0);
+		}
+	}
+
+
+}
+
+
+
+
 void removeProduct() {
 	system("CLS");
 	ifstream fin; // ifstream na citanie suboru
@@ -333,7 +407,9 @@ int main() {
 		}
 		else if (intMenuInput == 2)
 		{
+			addProduct();
 			continue;
+
 		}
 		else if (intMenuInput == 3)
 		{
