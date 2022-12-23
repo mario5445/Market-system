@@ -6,3 +6,4 @@ dzus			1.29
 cokolada		0.99
 muka			0.58
 maslo			3.50
+rozky			0.10

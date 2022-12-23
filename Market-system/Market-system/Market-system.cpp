@@ -40,7 +40,7 @@ void addProduct() {
 	cout << "Zadajte cenu noveho produktu: ";
 	cin >> userProductPrice;
 
-	fil.open("Produtky.txt", ios::in);
+	fil.open("Produkty.txt", ios::in);
 	if (!fil.is_open())
 	{
 		// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
@@ -48,7 +48,6 @@ void addProduct() {
 		cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
 		exit(0);
 	}
-
 	string line;
 	bool isDuplicate = false;
 
@@ -61,7 +60,6 @@ void addProduct() {
 			break;
 		}
 	}
-
 	fil.close();
 	if (fil.is_open())
 	{
@@ -91,8 +89,7 @@ void addProduct() {
 			exit(0);
 		}
 	}
-
-
+	system("CLS");
 }
 
 
