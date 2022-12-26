@@ -22,5 +22,6 @@
   <ItemGroup>
     <Text Include="AdminLogin.txt" />
     <Text Include="Produkty.txt" />
+    <Text Include="Udaje.txt" />
   </ItemGroup>
 </Project>

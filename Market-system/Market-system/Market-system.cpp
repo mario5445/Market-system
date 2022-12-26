@@ -3,6 +3,8 @@
 #include <fstream>
 #include <vector>
 #include <regex>
+#include <ctime>
+#pragma warning(disable : 4996)
 
 using namespace std;
 
@@ -17,6 +19,15 @@ void mainMenu() {
 	cout << "\t[6] Zmenit prihlasovacie udaje" << endl;
 	cout << "\t[7] Exit" << endl << endl;
 	cout << "Pre pokracovanie zvolte jedno z cisel v hranatych zatvorkach" << endl;
+}
+
+string getActualTime() {
+	// current date/time based on current system
+	time_t now = time(0);
+	// convert now to string form
+	string dt = ctime(&now);
+	cout << "The local date and time is: " << dt << endl;
+	return dt;
 }
 
 void exitFunc() {
@@ -53,7 +64,7 @@ void checkout() {
 	system("CLS");
 	vector<string> listOfProducts;
 	vector<string> products;
-	vector <float> prices;
+	float price = 0;
 	ifstream fin;
 	fin.open("Produkty.txt");
 	if (!fin.is_open())
@@ -82,49 +93,35 @@ void checkout() {
 	cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
 	cout << "$ Nablokovanie produktov $" << endl;
 	cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl << endl;
-	cout << "Zoznam produktov: " << endl << endl;
 	while (true)
 	{
-		system("CLS");
-		for (int i = 0; i < listOfProducts.size(); i++)
+		cout << "Zoznam produktov: " << endl << endl;
+		for (string i: listOfProducts)
 		{
-			cout << "\t" << listOfProducts.at(i) << endl;
+			cout << "\t" << i << endl;
 		}
+		cout << endl;
 		string userProductName;
 		cout << "Zadajte nazov produktu, ktory chcete nablokovat. Ak chcete skoncit s blokovanim napiste STOP" << endl;
 		cout << "-> ";
 		cin >> userProductName;
-		if (userProductName == "STOP" || userProductName == "stop")
+		string s = userProductName;
+		transform(s.begin(), s.end(), s.begin(), ::toupper);
+		if (s == "STOP")
 		{
 			break;
 		}
-		fin.open("Produkty.txt");
-		if (!fin.is_open())
-		{
-			// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-			exit(0);
-		}
 		bool contains = false;
 		string containedLine;
-		while (getline(fin, line))
+		for(int i = 0; i < listOfProducts.size(); i++)
 		{
-			if (line.substr(0, (userProductName + "\t").size()) == (userProductName + "\t"))
+			if (listOfProducts.at(i).substr(0, (userProductName + "\t").size()) == (userProductName + "\t"))
 			{
 				contains = true;
-				containedLine = line;
-				products.push_back(line);
+				containedLine = listOfProducts.at(i);
+				products.push_back(containedLine);
 				break;
 			}
-		}
-		fin.close();
-		if (fin.is_open())
-		{
-			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
-			exit(0);
 		}
 		if (contains)
 		{
@@ -137,7 +134,7 @@ void checkout() {
 				try
 				{
 					float num = stof(temp);
-					prices.push_back(num);
+					price += num;
 					continue;
 				}
 				catch (...)
@@ -155,7 +152,8 @@ void checkout() {
 			cout << "Chcete zadat produkt este raz? ano/nie" << endl;
 			cout << "-> ";
 			cin >> yesOrNo;
-			if (yesOrNo == "ano" || yesOrNo == "ANO")
+			transform(yesOrNo.begin(), yesOrNo.end(), yesOrNo.begin(), ::toupper);
+			if (yesOrNo == "ANO")
 			{
 				system("CLS");
 				continue;
@@ -164,9 +162,42 @@ void checkout() {
 				break;
 		}
 	}
-	string inpt;
-	cout << prices[0];
-	cin >> inpt;
+	if (products.size() > 0)
+	{
+		system("CLS");
+		for (string i: products)
+		{
+			cout << i << endl;
+		}
+		string s;
+		cout << "-> ";
+		cin >> s;
+	}
+	else
+	{
+		system("CLS");
+		cout << "Prazdny zoznam nablokovanych produktov!" << endl;
+		while (true)
+		{
+			string oneOrZero;
+			cout << "Ak sa chcete vratit na hlavne menu zadajte '1'. Ak chcete ukoncit program zadajte '0'." << endl;
+			cout << "-> ";
+			cin >> oneOrZero;
+			if (oneOrZero == "0")
+			{
+				exitFunc();
+			}
+			else if (oneOrZero == "1")
+			{
+				break;
+			}
+			else
+			{
+				cout << "Neplatný vstup. Skúste to znova" << endl;
+				continue;
+			}
+		}
+	}
 }
 
 void addProduct() {
@@ -400,7 +431,8 @@ void editProduct() {
 				cout << "Chcete znova zadat nazov produktu? ano/nie " << endl;
 				cout << "-> ";
 				cin >> yesOrNo;
-				if (yesOrNo == "ano" || yesOrNo == "ANO")
+				transform(yesOrNo.begin(), yesOrNo.end(), yesOrNo.begin(), ::toupper);
+				if (yesOrNo == "ANO")
 				{
 					system("CLS");
 					continue;
@@ -416,7 +448,8 @@ void editProduct() {
 			cout << "Chcete znova zadat nazov produktu? ano/nie " << endl;
 			cout << "-> ";
 			cin >> yesOrNo;
-			if (yesOrNo == "ano" || yesOrNo == "ANO")
+			transform(yesOrNo.begin(), yesOrNo.end(), yesOrNo.begin(), ::toupper);
+			if (yesOrNo == "ANO")
 			{
 				system("CLS");
 				continue;
@@ -559,6 +592,7 @@ void changeLoginData(bool isEmpty) {
 }
 
 void loginSystem() {
+	system("CLS");
 	cout << "*** Najskor sa prihlaste, ak chcete pokracovat ***" << endl << endl;
 	int counter = 0; // pomocou counteru program vie ci ma overit login alebo heslo
 	ifstream fin; // ifstream - subor je len na citanie
@@ -711,7 +745,7 @@ int main() {
 			try // exception
 			{
 				intMenuInput = stoi(strmenuInput); // konverzia stringu na int  
-				if (intMenuInput >= 1 && intMenuInput <= 7) // kontrola, ci je cislo v intervale od 1 po 7
+				if (intMenuInput >= 0 && intMenuInput <= 7) // kontrola, ci je cislo v intervale od 1 po 7
 					break; // opustenie cyklu
 				else
 				{
@@ -725,6 +759,7 @@ int main() {
 			catch (...) // zachytenie errorov napriklad pri konverzii
 			{
 				// chybova hlaska
+				system("CLS");
 				cout << "Nespravny input" << endl;
 				cout << "Zadaj svoj vyber znova -> ";
 				continue; // navrat na zaciatok cyklu
@@ -739,7 +774,6 @@ int main() {
 		{
 			addProduct();
 			continue;
-
 		}
 		else if (intMenuInput == 3)
 		{
@@ -757,6 +791,7 @@ int main() {
 		}
 		else if (intMenuInput == 6)
 		{
+			loginSystem();
 			changeLoginData(false); // zavolanie funkcie na zmenu prihlasovacich udajov
 			continue; // navrat na zaciatok cyklu
 		}
@@ -764,6 +799,11 @@ int main() {
 		{
 			exitFunc(); // zavolanie funkcie na vypnutie programu
 			break; // opustenie cyklu
+		}
+		else
+		{
+			getActualTime();
+			break;
 		}
 	}
 	return 0;

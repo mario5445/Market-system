@@ -132,6 +132,7 @@
   <ItemGroup>
     <Text Include="AdminLogin.txt" />
     <Text Include="Produkty.txt" />
+    <Text Include="Udaje.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
