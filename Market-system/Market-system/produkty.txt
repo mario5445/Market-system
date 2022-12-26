@@ -6,4 +6,8 @@ dzus			1.29
 maslo			3.50
 rozky			0.10
 muka			0.58
-cokolada			1.00
+cokolada		1.00
+donut			0.89
+hranolky		1.79
+mineralka		0.55
+medovnik		0.20

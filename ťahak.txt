@@ -13,8 +13,6 @@ string getLastCharacters(string str, int n) {
 
 int main() {
 	/*
-
-	// provizorna funkcia na ziskanie ceny zo suboru
 	fstream strm;
 	strm.open("Test.txt", ios::in);
 	if (strm.is_open())
@@ -47,9 +45,7 @@ int main() {
 		}
 		strm.close();
 		char arra[100];
-		// koniec funkcie
 		
-		// funkcia na odstranenie produktu zo zoznamu
 		ifstream fin;
 		fin.open("Test.txt");
 		ofstream temp;
@@ -67,10 +63,9 @@ int main() {
 		temp.close();
 		remove("Test.txt");
 		rename("temp.txt", "Test.txt");
-		// koniec funkcie
 	}*/
 	
-	// regexy
+	/*
 	string num = "09.54";
 	string reg = R"(\d{2}(\.\d{2}))";
 	string reg2 = R"(\d\d\.\d\d)";
@@ -81,8 +76,36 @@ int main() {
 	else
 	{
 		cout << "false" << endl;
+	}*/
+	/*
+	string a = "kola\t";
+	string inp;
+	cout << "kola: ";
+	cin >> inp;
+	if (a == inp + "\t")
+	{
+		cout << "Yes" << endl;
+	}
+	else
+	{
+		cout << "No" << endl;
+	}*/
+	
+	string num = "aajkfjaokdfjak\t94.54";
+	regex rgx("(\t\\d+\\.\\d{2})");
+	smatch match;
+	if (regex_search(num, match, rgx))
+	{
+		int split_on = match.position();
+		string s = num.substr(split_on);
+		cout << s.substr(1);
+		/*
+		string s = match[1];
+		string temp = s.substr(1);
+		cout << s << endl;
+		cout << temp << endl;*/
 	}
 	
-	
+
 	return 0;
 }
