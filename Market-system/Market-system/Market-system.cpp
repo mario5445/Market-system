@@ -8,6 +8,36 @@
 
 using namespace std;
 
+string language = "sk";
+
+void fileCouldntBeOpened() {
+	// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
+	system("CLS");
+	if (language == "sk")
+	{
+		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
+	}
+	else
+	{
+		cout << "Fatal error > File could not be opened" << endl;
+	}
+	exit(0);
+}
+
+void fileCouldntBeClosed() {
+	// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
+	system("CLS");
+	if (language == "sk")
+	{
+		cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
+	}
+	else
+	{
+		cout << "Fatal error > File could not be closed" << endl;
+	}
+	exit(0);
+}
+
 void mainMenu() {
 	// funkcia ktora vypise hlavne menu
 	cout << "++++++++  Hlavne menu  ++++++++" << endl;
@@ -33,7 +63,14 @@ string getActualTime() {
 void exitFunc() {
 	// funkcia ktora vypne program
 	system("CLS");
-	cout << "/*--*/ Dovidenia /*--*/" << endl;
+	if (language == "sk")
+	{
+		cout << "/*--*/ Dovidenia /*--*/" << endl;
+	}
+	else
+	{
+		cout << "/*--*/ Goodbye /*--*/" << endl;
+	}
 	exit(0);
 }
 
@@ -51,11 +88,26 @@ string checkForComma(string s) {
 bool containsProduct(string productName) {
 	ifstream fin;
 	fin.open("Produkty.txt");
+	if (!fin.is_open())
+	{
+		fileCouldntBeOpened();
+	}
 	string line;
 	while (getline(fin, line))
 	{
-		if (line.substr(0, (productName + "\t").size()) == (productName + "\t"))
+		if (line.substr(0, (productName + "\t").size()) == (productName + "\t")) {
+			fin.close();
+			if (fin.is_open())
+			{
+				fileCouldntBeClosed();
+			}
 			return true;
+		}
+	}
+	fin.close();
+	if (fin.is_open())
+	{
+		fileCouldntBeClosed();
 	}
 	return false;
 }
@@ -69,10 +121,7 @@ void checkout() {
 	fin.open("Produkty.txt");
 	if (!fin.is_open())
 	{
-		// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-		system("CLS");
-		cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeOpened();
 	}
 	string line;
 	while (getline(fin, line))
@@ -85,14 +134,21 @@ void checkout() {
 	fin.close();
 	if (fin.is_open())
 	{
-		// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-		system("CLS");
-		cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
-		exit(0);
+		fileCouldntBeClosed();
 	}
-	cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
-	cout << "$ Nablokovanie produktov $" << endl;
-	cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl << endl;
+	if (language == "sk")
+	{
+		cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl;
+		cout << "$ Nablokovanie produktov $" << endl;
+		cout << "$$$$$$$$$$$$$$$$$$$$$$$$$$" << endl << endl;
+	}
+	else
+	{
+		cout << "$$$$$$$$$$$$" << endl;
+		cout << "$ Checkout $" << endl;
+		cout << "$$$$$$$$$$$$" << endl << endl;
+	}
+	
 	while (true)
 	{
 		cout << "Zoznam produktov: " << endl << endl;
@@ -229,10 +285,7 @@ void addProduct() {
 		fil.open("Produkty.txt", ios::in);
 		if (!fil.is_open())
 		{
-			// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-			exit(0);
+			fileCouldntBeOpened();
 		}
 		bool isDuplicate = false;
 		if (containsProduct(userProductName))
@@ -242,20 +295,14 @@ void addProduct() {
 		fil.close();
 		if (fil.is_open())
 		{
-			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
-			exit(0);
+			fileCouldntBeClosed();
 		}
 		if (!isDuplicate && isValid)
 		{
 			fil.open("Produkty.txt", ios::app);
 			if (!fil.is_open())
 			{
-				// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-				system("CLS");
-				cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-				exit(0);
+				fileCouldntBeOpened();
 			}
 			string tabs;
 			if (userProductName.length() <= 7)
@@ -272,10 +319,7 @@ void addProduct() {
 
 			if (fil.is_open())
 			{
-				// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-				system("CLS");
-				cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
-				exit(0);
+				fileCouldntBeClosed();
 			}
 			break;
 		}
@@ -312,10 +356,7 @@ void editProduct() {
 		fin.open("Produkty.txt");
 		if (!fin.is_open()) // kontorola ci je subor otvoreny
 		{
-			// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvori" << endl;
-			exit(0);
+			fileCouldntBeOpened();
 		}
 		string line; // premenna pre funkciu getline
 		while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
@@ -326,20 +367,14 @@ void editProduct() {
 		fin.close(); // zatvorenie suboru
 		if (fin.is_open()) // kontorola ci je subor zatvoreny
 		{
-			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
-			exit(0);
+			fileCouldntBeClosed();
 		}
 		cout << "Zadajte nazov produktu ktory chcete upravit: ";
 		cin >> userProductName;
 		fin.open("Produkty.txt");
 		if (!fin.is_open()) // kontorola ci je subor otvoreny
 		{
-			// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-			exit(0);
+			fileCouldntBeOpened();
 		}
 		bool isValid = false;
 		if (containsProduct(userProductName))
@@ -349,10 +384,7 @@ void editProduct() {
 		fin.close();
 		if (fin.is_open()) // kontorola ci je subor zatvoreny
 		{
-			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
-			exit(0);
+			fileCouldntBeClosed();
 		}
 		if (isValid)
 		{
@@ -375,19 +407,12 @@ void editProduct() {
 				fin.open("Produkty.txt");
 				if (!fin.is_open()) // kontorola ci je subor otvoreny
 				{
-					// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-					system("CLS");
-					cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-					exit(0);
+					fileCouldntBeOpened();
 				}
 				temp.open("temp.txt");
 				if (!temp.is_open()) // kontorola ci je subor otvoreny
 				{
-					// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-					system("CLS");
-					cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-					fin.close();
-					exit(0);
+					fileCouldntBeOpened();
 				}
 				while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
 				{
@@ -417,10 +442,7 @@ void editProduct() {
 				rename("temp.txt", "Produkty.txt"); // premenovanie suboru temp.txt na Produkty.txt
 				if (fin.is_open() || temp.is_open()) // kontrola ci je subor zatvoreny
 				{
-					// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-					system("CLS");
-					cout << "Fatal error > Subor Produkty.txt alebo temp.txt sa nepodarilo zatvorit" << endl;
-					exit(0);
+					fileCouldntBeClosed();
 				}
 				break;
 			}
@@ -479,10 +501,7 @@ void removeProduct() {
 		fin.close(); // zatvorenie suboru
 		if (fin.is_open()) // kontorola ci je subor zatvoreny
 		{
-			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor Produkty.txt sa nepodarilo zatvorit" << endl;
-			exit(0);
+			fileCouldntBeClosed();
 		}
 		string userInput; // vytvorenie premennej typu string na uskladnenie inputu od pouzivatela
 		cout << endl << "Zadajte nazov produktu: "; // info pre pouzivatela
@@ -506,38 +525,107 @@ void removeProduct() {
 				rename("temp.txt", "Produkty.txt"); // premenovanie suboru temp.txt na Produkty.txt
 				if (fin.is_open() || temp.is_open()) // kontrola ci je subor zatvoreny
 				{
-					// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-					system("CLS");
-					cout << "Fatal error > Subor Produkty.txt alebo temp.txt sa nepodarilo zatvorit" << endl;
-					exit(0);
+					fileCouldntBeClosed();
 				}
 			}
 			else
 			{
-				// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-				system("CLS");
-				cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
 				temp.close();
-				exit(0);
+				fileCouldntBeOpened();
 			}
 		}
 		else
 		{
-			// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor temp.txt sa nepodarilo otvorit" << endl;
-			exit(0);
+			fileCouldntBeOpened();
 		}
 	}
 	else
 	{
-		// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-		system("CLS");
-		cout << "Fatal error > Subor Produkty.txt sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeOpened();
 	}
 	system("CLS");
 }
+
+
+
+void changeReceiptData(bool isEmpty) {
+	system("CLS");
+
+	ofstream temp;
+	ifstream fin;
+	if (!isEmpty)
+	{
+		cout << "****************************" << endl;
+		cout << "* Zmena udajov pre blociky *" << endl;
+		cout << "****************************" << endl << endl;
+	}
+	else
+	{
+		cout << "****************************************" << endl;
+		cout << "* Nastavenie novych udajov pre blociky *" << endl;
+		cout << "****************************************" << endl << endl;
+	}
+	
+
+	fin.open("Udaje.txt");
+	if (!fin.is_open())
+	{
+		fileCouldntBeOpened();
+	}
+	cout << "Aktulane udaje" << endl << endl;
+
+	string line; // premenna pre funkciu getline
+	while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
+	{
+		// vypisovanie jednotlivych riadkov
+		cout << "\t" << line << endl;
+	}
+	fin.close();
+	if (fin.is_open())
+	{
+		fileCouldntBeClosed();
+	}
+	string userName;
+	string userAdress;
+	string userICO;
+	cout << "Zadajte novy nazov obchodu: ";
+	cin >> userName;
+	cout << "Zadajte novu adresu: ";
+	cin >> userAdress;
+	cout << "Zadajte nove ICO: ";
+	while (true)
+	{
+		cin >> userICO;
+		try
+		{
+			int userICOint = stoi(userICO);
+			break;
+		}
+		catch (...)
+		{
+			cout << "Zadal si nespravne ICO, skus to znova: ";
+			continue;
+		}
+	}
+	temp.open("temp.txt");
+	if (!temp.is_open())
+	{
+		fileCouldntBeOpened();
+	}
+	temp << "Nazov:\t" << userName << endl;
+	temp << "Adresa:\t" << userAdress << endl;
+	temp << "ICO:\t" << userICO;
+	temp.close();
+	if (temp.is_open())
+	{
+		fileCouldntBeClosed();
+	}
+	remove("Udaje.txt");
+	rename("temp.txt", "Udaje.txt");
+	system("CLS");
+}
+
+
 
 void changeLoginData(bool isEmpty) {
 	system("CLS"); 
@@ -569,11 +657,7 @@ void changeLoginData(bool isEmpty) {
 		temp.close(); // zatvorenie suboru
 		if (temp.is_open()) // kontrola ci je subor zatvoreny
 		{
-			// ak sa subor nepodarilo zatvorit vypise sa chybova hlaska a program sa vypne
-			system("CLS");
-			cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
-			cout << "Udaje sa nepodarilo zmenit" << endl;
-			exit(0);
+			fileCouldntBeClosed();
 		}
 		else
 		{
@@ -583,10 +667,7 @@ void changeLoginData(bool isEmpty) {
 	}
 	else
 	{
-		// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-		system("CLS");
-		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeOpened();
 	}
 	system("CLS");
 }
@@ -646,18 +727,12 @@ void loginSystem() {
 		fin.close();
 		if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
 		{
-			// ak subor nie je zatvoreny vypise sa chybova hlaska a program sa hned vypne
-			system("CLS");
-			cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
-			exit(0);
+			fileCouldntBeClosed();
 		}
 	}
 	else
 	{
-		// ak sa subor nepodarilo otvorit vypise sa chybova hlaska a program sa vypne
-		system("CLS");
-		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeOpened();
 	}
 	// vycistenie konzoly v pripade spravneho loginu a hesla
 	system("CLS");
@@ -668,10 +743,7 @@ int checkFileLines(string fileName) {
 	fil.open(fileName); // otvorenie suboru
 	if (!fil.is_open()) // kontrola ci je subor otvoreny
 	{
-		// chybova hlaska
-		system("CLS");
-		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeOpened();
 	}
 	int counter = 0; // counter na pocitanie riadkov v subore
 	string line; // premenna na ulozenie riadku 
@@ -685,10 +757,7 @@ int checkFileLines(string fileName) {
 	fil.close(); // zatvorenie suboru
 	if (fil.is_open()) // kontrola ci je subor zatvoreny
 	{
-		// chybova hlaska
-		system("CLS");
-		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeClosed();
 	}
 	if (counter < 2) // kontrola ci ma subor 1 riadok a menej
 	{
@@ -705,20 +774,14 @@ int checkIfFileIsEmpty(string fileName) {
 	fil.open(fileName);
 	if (!fil.is_open())
 	{
-		// chybova hlaska
-		system("CLS");
-		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeOpened();
 	}
 	fil.seekg(0, ios::end);
 	int len = fil.tellg();
 	fil.close();
 	if (fil.is_open())
 	{
-		// chybova hlaska
-		system("CLS");
-		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
-		exit(0);
+		fileCouldntBeClosed();
 	}
 	return len;
 }
@@ -787,6 +850,12 @@ int main() {
 		}
 		else if (intMenuInput == 5)
 		{
+			int isEmpty = checkIfFileIsEmpty("Udaje.txt");
+			int lineCount = checkFileLines("Udaje.txt");
+			if (isEmpty != 0 && lineCount != 0) // kontrola ci je subor prazdny
+				changeReceiptData(false);
+			else
+				changeReceiptData(true);
 			continue;
 		}
 		else if (intMenuInput == 6)
