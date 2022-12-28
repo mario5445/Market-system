@@ -1,5 +1,3 @@
-vajcia S		1.20
-mlieko			1.00
 chlieb			1.10
 cukor			0.55
 dzus			1.29
@@ -10,6 +8,8 @@ cokolada		1.00
 donut			0.89
 hranolky		1.79
 mineralka		0.55
-medovnik		0.20
 jablkovy kolac		1.40
 vajcia M		1.40
+kajzerka		0.17
+vajcia			1.20
+mlieko			1.00
