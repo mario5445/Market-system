@@ -1,3 +1,3 @@
 Nazov:	SPS IT
 Adresa:	Kysucke Nove Mesto
-ICO:	4565
+ICO:	598786
