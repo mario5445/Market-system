@@ -4,7 +4,7 @@ chlieb			1.10
 cukor			0.55
 dzus			1.29
 maslo			3.50
-rozky			0.10
+rozok			0.10
 muka			0.58
 cokolada		1.00
 donut			0.89
