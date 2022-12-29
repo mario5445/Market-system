@@ -1,0 +1,7 @@
+﻿  Market-system.cpp
+C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\Market-system\Market-system.cpp(897,10): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 1011 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Market-system.vcxproj -> C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\x64\Release\Market-system.exe
