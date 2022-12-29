@@ -8,6 +8,7 @@ chocolate		1.00
 donut			0.89
 fries			1.79
 soda			0.55
-bun				0.17
+bun			0.17
 eggs			1.20
-milk			1.00cola			1.00
+milk			1.00
+cola			1.15

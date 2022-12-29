@@ -12,6 +12,7 @@ using namespace std;
 
 string language = "sk"; // globalna premenna na jazyk
 float money = 0; // globalna premnna na trzbu
+int numOfCheckouts = 0;
 
 // random kod zo stack overflow na output eura
 void printEuroSign() {
@@ -73,6 +74,24 @@ void selectLanguage() {
 	
 }
 
+string checkForDotAndDecimals(string price) {
+	bool containsDot = false;
+	for (int i = 0; i < price.length(); i++)
+	{
+		if (price[i] == '.')
+		{
+			containsDot = true; 
+			break;
+		}
+	}
+	if (!containsDot)
+	{
+		price = price + ".00";
+		return price;
+	}
+	return price;
+}
+
 void printFileContent(string fileName) {
 	ifstream fil;
 	fil.open(fileName);
@@ -93,7 +112,7 @@ void printFileContent(string fileName) {
 		string line;
 		while (getline(fil, line))
 		{
-			cout << "\t\t\t" << line << "$" << endl;
+			cout << "\t\t\t" << line + "$" << endl;
 		}
 	}
 	else
@@ -101,7 +120,7 @@ void printFileContent(string fileName) {
 		string line;
 		while (getline(fil,line))
 		{
-			cout << "\t\t\t" << line;
+			cout << "\t\t\t" << line << endl;
 		}
 	}
 	fil.close();
@@ -146,9 +165,7 @@ string getReceiptData(string data) { // parameter pre hladanie dat
 	}
 	fin.close(); // zatvorenie suboru
 	if (fin.is_open()) // konrola ci je subor zatvoreny
-	{
 		fileCouldntBeClosed(); // chybova funkcia
-	}
 	return extractedData; // navratova hodnota 
 }
 
@@ -181,7 +198,7 @@ float countTaxDivisor() {
 		{
 			cout << "Unexpected error occured" << endl;
 		}
-		
+		cin.get();
 		exit(0);
 	}
 	dphDivisor = dphDivisor / 100;
@@ -192,23 +209,32 @@ float countTaxDivisor() {
 // zobrazenie stavu financii
 void viewStatus() {
 	system("CLS"); // vycistenie obrazovky
+	string tabs = "\t\t";
 	if (language == "sk")
 	{
-		cout << "Celkova trzba: " << money; printEuroSign(); // celkova trzba
+		cout << tabs << "$$$$$$$$$$$$$$$$$" << endl;
+		cout << tabs << "$ Prehlad trzby $" << endl;
+		cout << tabs << "$$$$$$$$$$$$$$$$$" << endl;
+		cout << tabs << "Pocet nakupov: " << numOfCheckouts << endl;
+		cout << tabs << "Celkova trzba: " << money; printEuroSign(); // celkova trzba
 		// funkcia ceil - zaokruhlenie
-		cout << "Celkova trzba bez DPH: " << ceil((money / countTaxDivisor()) * 100) / 100; printEuroSign(); // vypocet ceny bez DPH
-		cout << "Sadzba DPH: " << getReceiptData("DPH") << endl; // dph sadzba
-		cout << "Celkova DPH: " << ceil((money - (money / countTaxDivisor())) * 100) / 100; printEuroSign(); // vypocet celkovej DPH
-		cout << "Pre opustenie stlacte ENTER -> "; // info pre uzivatela
+		cout << tabs << "Celkova trzba bez DPH: " << ceil((money / countTaxDivisor()) * 100) / 100; printEuroSign(); // vypocet ceny bez DPH
+		cout << tabs << "Sadzba DPH: " << getReceiptData("DPH") << endl; // dph sadzba
+		cout << tabs << "Celkova DPH: " << ceil((money - (money / countTaxDivisor())) * 100) / 100; printEuroSign(); // vypocet celkovej DPH
+		cout << tabs << "Pre opustenie stlacte ENTER -> "; // info pre uzivatela
 	}
 	else
 	{
-		cout << "Total sales: " << money << "$" << endl; // celkova trzba
+		cout << tabs << "$$$$$$$$$$$$$$$$$$" << endl;
+		cout << tabs << "$ Sales overview $" << endl;
+		cout << tabs << "$$$$$$$$$$$$$$$$$$" << endl;
+		cout << tabs << "Number of checkouts: " << numOfCheckouts << endl;
+		cout << tabs << "Total sales: " << money << "$" << endl; // celkova trzba
 		// funkcia ceil - zaokruhlenie
-		cout << "Total sales without taxes: " << ceil((money / countTaxDivisor()) * 100) / 100 << "$" << endl; // vypocet ceny bez DPH
-		cout << "Tax: " << getReceiptData("DPH") << endl; // dph sadzba
-		cout << "Total taxes: " << ceil((money - (money / countTaxDivisor())) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
-		cout << "Press ENTER to exit -> "; // info pre uzivatela
+		cout << tabs << "Total sales without taxes: " << ceil((money / countTaxDivisor()) * 100) / 100 << "$" << endl; // vypocet ceny bez DPH
+		cout << tabs << "Tax: " << getReceiptData("TAX") << endl; // dph sadzba
+		cout << tabs << "Total taxes: " << ceil((money - (money / countTaxDivisor())) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
+		cout << tabs << "Press ENTER to exit -> "; // info pre uzivatela
 	}
 	cin.get(); // narozdiel od klasickeho cin zoberie aj ENTER
 	system("CLS"); // vycistenie obrazovky
@@ -520,11 +546,11 @@ void checkout() {
 			cout << "$" << endl; // output eura
 			cout << endl << tab << "SUM without TAX" << "\t\t" << ceil((price / countTaxDivisor()) * 100) / 100; // vypocet ceny bez DPH
 			cout << "$" << endl; // output eura
-			cout << tab << "TAX:\t\t" << getReceiptData("TAX") << endl; // vypisanie sadzby DPH 
-			cout << tab << "Total TAX:\t\t\t" << ceil((price - (price / countTaxDivisor())) * 100) / 100; // vypocet DPH
+			cout << tab << "TAX:\t\t\t" << getReceiptData("TAX") << endl; // vypisanie sadzby DPH 
+			cout << tab << "Total TAX:\t\t" << ceil((price - (price / countTaxDivisor())) * 100) / 100; // vypocet DPH
 			cout << "$" << endl; // output eura
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
-			cout << tab << "\t\tThank you for your purchase" << endl;
+			cout << tab << "\tThank you for your purchase" << endl;
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
 		}
 		while (true) // platba
@@ -563,6 +589,7 @@ void checkout() {
 				if (s.length() == 4) // kontrola ci ma PIN styri cislice
 				{
 					money += price; // pripocitanie penazi na nas ucet
+					numOfCheckouts++;
 					break; // ukoncenie cyklu
 				}
 				else // neplatny PIN
@@ -581,7 +608,9 @@ void checkout() {
 			}
 			else if (s == "1") // platba v hotovosti
 			{
+				// TODO
 				money += price; // pripocitanie penazi na nas ucet
+				numOfCheckouts++;
 				break; // opustenie cyklu
 			}
 			else // v pripade neplatnej moznosti
@@ -710,6 +739,7 @@ void addProduct() {
 		}
 		cin >> userProductPrice; // input
 		userProductPrice = checkForComma(userProductPrice); // hladanie ciarky v cene a jej nahradenie
+		userProductPrice = checkForDotAndDecimals(userProductPrice);
 		try // exception
 		{
 			float checkFloat = stof(userProductPrice); // konverzia na float aby sme zistili ci uzivatel zadal platnu cenu
@@ -856,6 +886,7 @@ void editProduct() {
 			}
 			cin >> userProductPrice; // input
 			userProductPrice = checkForComma(userProductPrice); // kontrola ci zadana cena obsahuje ciarku a jej nahradenie za bodku
+			userProductPrice = checkForDotAndDecimals(userProductPrice); // kontrola ci ma cena desatinne miesta a bodku pre lepsie zobrazenie
 			try // exception
 			{
 				float checkFloat = stof(userProductPrice); // konverzia stringu na float pre overenie ci uzivatel zadal validnu cenu

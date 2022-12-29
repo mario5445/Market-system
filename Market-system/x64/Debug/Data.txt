@@ -1,0 +1,4 @@
+Name:	SPS IT
+Adress:	Kysucke Nove Mesto
+ID:	4546
+TAX:	20%

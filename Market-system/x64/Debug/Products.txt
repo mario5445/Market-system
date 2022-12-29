@@ -1,0 +1,14 @@
+bread			1.10
+sugar			0.55
+juice			1.29
+butter			3.50
+pastry			0.10
+flour			0.58
+chocolate		1.00
+donut			0.89
+fries			1.79
+soda			0.55
+bun			0.17
+eggs			1.20
+milk			1.00
+cola			1.15
