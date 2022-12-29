@@ -46,6 +46,35 @@ void selectLanguage() {
 
 }
 
+void printFileContent(string fileName) {
+	ifstream fil;
+	fil.open(fileName);
+	if (!fil.is_open())
+	{
+		fileCouldntBeOpened();
+	}
+	if (fileName == "Produkty.txt")
+	{
+		string line;
+		while (getline(fil, line))
+		{
+			cout << "\t\t\t" << line; printEuroSign();
+		}
+	}
+	else
+	{
+		string line;
+		while (getline(fil,line))
+		{
+			cout << "\t\t\t" << line;
+		}
+	}
+	fil.close();
+	if (fil.is_open())
+	{
+		fileCouldntBeClosed();
+	}
+}
 
 // vyberie data zo suboru ktore si vypytam
 string getReceiptData(string data) { // parameter pre hladanie dat
@@ -397,6 +426,9 @@ void addProduct() {
 	cout << tabs << "++++++++++++++++++++++++++++++" << endl << endl;
 	while (true)
 	{
+		cout << tabs << "Zoznam produktov: " << endl << endl;
+		printFileContent("Produkty.txt");
+		cout << endl;
 		bool isValid = true;
 		cout << tabs << "Zadajte nazov noveho produktu: "; // info pre uzivatela
 		getline(cin, userProductName);
@@ -479,19 +511,9 @@ void editProduct() {
 	cout << tabs << "**********************" << endl << endl;
 	while (true) 
 	{
+		string line;
 		cout << tabs << "Zoznam produktov: " << endl << endl; // info pre uzivatela
-		fin.open("Produkty.txt"); // otvorenie suboru
-		if (!fin.is_open()) // kontorola ci je subor otvoreny
-			fileCouldntBeOpened(); // chybova funkcia
-		string line; // premenna pre funkciu getline
-		while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
-		{
-			// vypisovanie jednotlivych riadkov
-			cout << tabs << "\t" << line; printEuroSign();
-		}
-		fin.close(); // zatvorenie suboru
-		if (fin.is_open()) // kontorola ci je subor zatvoreny
-			fileCouldntBeClosed(); // chybova funkcia
+		printFileContent("Produkty.txt");
 		cout << endl << tabs << "Zadajte nazov produktu ktory chcete upravit: "; // info pre uzivatela
 		getline(cin, userProductName); // input
 		fin.open("Produkty.txt"); // otvorenie suboru
@@ -613,16 +635,12 @@ void removeProduct() {
 	if(fin.is_open()) // kontrola, ci je subor otvoreny
 	{
 		string line; // premenna pre funkciu getline
-		while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
-		{
-			// vypisovanie jednotlivych riadkov
-			cout << tabs << "\t" << line; printEuroSign();
-		}
+		printFileContent("Produkty.txt");
 		fin.close(); // zatvorenie suboru
 		if (fin.is_open()) // kontorola ci je subor zatvoreny
 			fileCouldntBeClosed();
 		string userInput; // vytvorenie premennej typu string na uskladnenie inputu od pouzivatela
-		cout << tabs << endl << "Zadajte nazov produktu: "; // info pre pouzivatela
+		cout << endl << tabs << "Zadajte nazov produktu: "; // info pre pouzivatela
 		getline(cin, userInput); // ulozenie inputu do premennej
 		temp.open("temp.txt"); // otvorenie suboru ofstreamom
 		if (temp.is_open()) // kontrola ci je subor otvoreny
@@ -680,12 +698,7 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	if (!fin.is_open()) // kontrola ci je subor otvoreny
 		fileCouldntBeOpened(); // chybova funkcia
 	cout << tabs << "Aktulane udaje: " << endl << endl; // info pre uzivatela
-	string line; // premenna pre funkciu getline
-	while (getline(fin, line)) // getline zoberie riadok zo suboru a ulozi ho do premennej line
-	{
-		// vypisovanie jednotlivych riadkov
-		cout << tabs << "\t" << line << endl;
-	}
+	printFileContent("Udaje.txt");
 	cout << tabs << endl;
 	fin.close(); // zatvorenie suboru
 	if (fin.is_open()) // kontrola ci je subor zatvoreny
