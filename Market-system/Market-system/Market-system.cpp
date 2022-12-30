@@ -45,6 +45,7 @@ void fileCouldntBeClosed() {
 
 // vyber jazyka
 void selectLanguage() {
+	system("CLS");
 	string tabs = "\t\t";
 	string input;
 	cout << tabs << "Vyberte jazyk/Select language" << endl << endl;
@@ -71,7 +72,7 @@ void selectLanguage() {
 			continue;
 		}
 	}
-	
+	system("CLS");
 }
 
 string checkForDotAndDecimals(string price) {
@@ -610,10 +611,70 @@ void checkout() {
 			}
 			else if (s == "1") // platba v hotovosti
 			{
-				// TODO
-				money += price; // pripocitanie penazi na nas ucet
-				numOfCheckouts++;
-				break; // opustenie cyklu
+				string userCash;
+				float userCashFloat = 0;
+				while (true)
+				{
+					if (language == "sk")
+					{
+						cout << tabs <<  "Obdrzana suma: ";
+					}
+					else
+					{
+						cout << tabs <<  "Received cash: ";
+					}
+					cin >> userCash;
+					try
+					{
+						userCash = checkForComma(userCash);
+						userCashFloat = stof(userCash);
+						break;
+					}
+					catch (...)
+					{
+						if (language == "sk")
+						{
+							cout << tabs << "Zadali ste neplatnu cenu, skuste to znova" << endl;
+						}
+						else
+						{
+							cout << tabs << "You have entered invalid value, try again" << endl;
+						}
+						continue;
+					}
+				}
+				float vydavok = userCashFloat - price;
+				if (vydavok >= 0)
+				{
+					if (language == "sk")
+					{
+						cout << tabs << "Vydavok: " << vydavok << endl;
+						cout << tabs << "-> ";
+					}
+					else
+					{
+						cout << tabs << "Change: " << vydavok << endl;
+						cout << tabs << "-> ";
+					}
+					cin.ignore();
+					cin.get();
+					money += price; // pripocitanie penazi na nas ucet
+					numOfCheckouts++;
+					break; // opustenie cyklu
+				}
+				else
+				{
+					system("CLS");
+					if (language == "sk")
+					{
+						cout << "Zakaznik dal malo penazi. Skuste inu moznost platby" << endl << endl;
+					}
+					else
+					{
+						cout << "Customer hasn't paid enough. Try different payment method" << endl << endl;
+					}
+					continue;
+				}
 			}
 			else // v pripade neplatnej moznosti
 			{
