@@ -257,7 +257,8 @@ void mainMenu() {
 		cout << tabs << "\t[5] Zmenit udaje pre nakupne doklady" << endl;
 		cout << tabs << "\t[6] Zmenit prihlasovacie udaje" << endl;
 		cout << tabs << "\t[7] Prehlad trzby" << endl;
-		cout << tabs << "\t[8] Exit" << endl << endl;
+		cout << tabs << "\t[8] Zmena jazyka" << endl;
+		cout << tabs << "\t[9] Exit" << endl << endl;
 		cout << tabs << "\tPre pokracovanie zvolte jedno z cisel v hranatych zatvorkach" << endl;
 	}
 	else
@@ -272,7 +273,8 @@ void mainMenu() {
 		cout << tabs << "\t[5] Change receipt data" << endl;
 		cout << tabs << "\t[6] Change login data" << endl;
 		cout << tabs << "\t[7] Sales overview" << endl;
-		cout << tabs << "\t[8] Exit" << endl << endl;
+		cout << tabs << "\t[8] Change language" << endl;
+		cout << tabs << "\t[9] Exit" << endl << endl;
 		cout << tabs << "\tTo continue select one of the numbers in square brackets" << endl;
 	}
 }
@@ -1504,7 +1506,7 @@ int main() {
 			try // exception
 			{
 				intMenuInput = stoi(strmenuInput); // konverzia stringu na int  
-				if (intMenuInput >= 0 && intMenuInput <= 8) // kontrola, ci je cislo v intervale od 1 po 7
+				if (intMenuInput > 0 && intMenuInput <= 9) // kontrola, ci je cislo v intervale od 1 po 9
 					break; // opustenie cyklu
 				else
 				{
@@ -1633,6 +1635,11 @@ int main() {
 			continue; // navrat na zaciatok cyklu
 		}
 		else if (intMenuInput == 8)
+		{
+			selectLanguage();
+			continue; 
+		}
+		else if (intMenuInput == 9)
 		{
 			exitFunc(); // zavolanie funkcie na vypnutie programu
 			break; // opustenie cyklu
