@@ -28,6 +28,7 @@ void fileCouldntBeOpened() {
 		cout << "Fatal error > Subor sa nepodarilo otvorit" << endl;
 	else
 		cout << "Fatal error > File could not be opened" << endl;
+	cin.ignore();
 	cin.get();
 	exit(0); // vypnutie programu
 }
@@ -39,6 +40,7 @@ void fileCouldntBeClosed() {
 		cout << "Fatal error > Subor sa nepodarilo zatvorit" << endl;
 	else
 		cout << "Fatal error > File could not be closed" << endl;
+	cin.ignore();
 	cin.get();
 	exit(0); // vypnutie programu
 }
@@ -199,6 +201,7 @@ float countTaxDivisor() {
 		{
 			cout << "Unexpected error occured" << endl;
 		}
+		cin.ignore();
 		cin.get(); // pockanie na ENTER
 		exit(0); // opustenie programu
 	}
@@ -214,7 +217,7 @@ void viewStatus() {
 	{
 		cout << tabs << "$$$$$$$$$$$$$$$$$" << endl;
 		cout << tabs << "$ Prehlad trzby $" << endl;
-		cout << tabs << "$$$$$$$$$$$$$$$$$" << endl;
+		cout << tabs << "$$$$$$$$$$$$$$$$$" << endl << endl;
 		cout << tabs << "Pocet nakupov: " << numOfCheckouts << endl;
 		cout << tabs << "Celkova trzba: " << money; printEuroSign(); // celkova trzba
 		// funkcia ceil - zaokruhlenie
@@ -227,7 +230,7 @@ void viewStatus() {
 	{
 		cout << tabs << "$$$$$$$$$$$$$$$$$$" << endl;
 		cout << tabs << "$ Sales overview $" << endl;
-		cout << tabs << "$$$$$$$$$$$$$$$$$$" << endl;
+		cout << tabs << "$$$$$$$$$$$$$$$$$$" << endl << endl;
 		cout << tabs << "Number of checkouts: " << numOfCheckouts << endl;
 		cout << tabs << "Total sales: " << money << "$" << endl; // celkova trzba
 		// funkcia ceil - zaokruhlenie
@@ -646,12 +649,12 @@ void checkout() {
 				{
 					if (language == "sk")
 					{
-						cout << tabs << "Vydavok: " << vydavok << endl;
+						cout << tabs << "Vydavok: " << vydavok; printEuroSign();
 						cout << tabs << "-> ";
 					}
 					else
 					{
-						cout << tabs << "Change: " << vydavok << endl;
+						cout << tabs << "Change: " << vydavok << "$" << endl;
 						cout << tabs << "-> ";
 					}
 					cin.ignore(); // bez toho to nejde
@@ -1388,7 +1391,7 @@ void changeLoginData(bool isEmpty) { // parameter
 	system("CLS"); // vycistenie obrazovky
 }
 
-void loginSystem() {
+bool loginSystem() {
 	string tabs = "\t\t"; // tabulatory
 	system("CLS"); // vycistenie obraovky
 	if (language == "sk")
@@ -1435,55 +1438,35 @@ void loginSystem() {
 					counter++; // inkrementacia counteru
 				else
 				{
-					/*
-					tato cast sa spusti len ked je nespravny login
-					vypise sa chybova hlaska, zatvori sa textovy subor a vypne sa program
-					*/
-					system("CLS"); // vycistenie obrazovky
-					if (language == "sk")
-					{
-						cout << tabs << "Zistili sme neopravneny pristup" << endl; // info pre uzivatela
-					}
-					else
-					{
-						cout << tabs << "Unauthorized access detected" << endl; // info pre uzivatela
-					}
 					fin.close(); // zatvorenie suboru
-					cin.get(); // cakanie na ENTER
-					exit(0); // vypnutie programu
+					if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
+						fileCouldntBeClosed(); // chybova funkcia
+					return false;
 				}
 			}
 			else if(counter == 1) 
 			{
 				if (arra == passwordstr) // program skontroluje heslo
-					break; // counter sa uz neinkrementuje ale pomocou break sa dostaneme von z cyklu
+				{
+					// zatvorenie suboru
+					fin.close(); // zatvorenie suboru
+					if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
+						fileCouldntBeClosed(); // chybova funkcia
+					system("CLS"); // vycistenie obrazovky
+					return true;
+				}	
 				else
 				{
-					// tato cast sa spusti ak je nespravne heslo
-					system("CLS"); // vycistenie obrazovky
-					if (language == "sk")
-					{
-						cout << tabs << "Zistili sme neopravneny pristup" << endl; // info pre uzivatela
-					}
-					else
-					{
-						cout << tabs << "Unauthorized access detected" << endl; // info pre uzivatela
-					}
 					fin.close(); // zatvorenie suboru
-					cin.get();
-					exit(0); // vypnutie programu
+					if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
+						fileCouldntBeClosed(); // chybova funkcia
+					return false;
 				}
 			}
 		}
-		// zatvorenie suboru
-		fin.close(); // zatvorenie suboru
-		if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
-			fileCouldntBeClosed(); // chybova funkcia
 	}
 	else
 		fileCouldntBeOpened(); // chybova funkcia
-	// vycistenie konzoly v pripade spravneho loginu a hesla
-	system("CLS"); // vycistenie obrazovky
 } 
 
 // skontroluje kolko ma subor riadkov. Vrati int
@@ -1530,7 +1513,33 @@ int main() {
 	int filLineCount = checkFileLines("AdminLogin.txt"); // kontrola poctu riadkov suboru
 	string tabs = "\t\t";
 	if (isFileEmpty != 0 && filLineCount != 0) // kontrola ci je subor prazdny alebo ma malo riadkov
-		loginSystem(); // login
+	{
+		bool isValid = false;
+		for (int i = 0; i < 3; i++)
+		{
+			if (loginSystem())
+			{
+				isValid = true;
+				break;
+			}
+		}
+		if (!isValid)
+		{
+			// tato cast sa spusti ak je nespravny login alebo heslo
+			system("CLS"); // vycistenie obrazovky
+			if (language == "sk")
+			{
+				cout << "Zistili sme neopravneny pristup" << endl; // info pre uzivatela
+			}
+			else
+			{
+				cout << "Unauthorized access detected" << endl; // info pre uzivatela
+			}
+			cin.ignore();
+			cin.get();
+			exit(0); // vypnutie programu
+		}
+	}
 	else
 		changeLoginData(true); // zmena prihlasovacich udajov
 	// uvitanie pouzivatela
