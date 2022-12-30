@@ -45,18 +45,18 @@ void fileCouldntBeClosed() {
 
 // vyber jazyka
 void selectLanguage() {
-	system("CLS");
-	string tabs = "\t\t";
-	string input;
+	system("CLS"); // vycistenie obrazovky
+	string tabs = "\t\t"; // tabulatory
+	string input; // uskladnenie inputu
 	cout << tabs << "Vyberte jazyk/Select language" << endl << endl;
 	while (true)
 	{
 		cout << tabs << "\t[1] Slovencina" << endl;
-		cout << tabs << "\t[2] English" << endl << endl;
+		cout << tabs << "\t[2] English" << endl << endl; // info pre pouzivatela
 		cout << tabs << "Vyberte jednu z moznosti/Select one option" << endl;
 		cout << tabs << "-> ";
-		cin >> input;
-		if (input == "1")
+		cin >> input; // input
+		if (input == "1") // overenie inputu
 		{
 			language = "sk";
 			break;
@@ -72,43 +72,43 @@ void selectLanguage() {
 			continue;
 		}
 	}
-	system("CLS");
+	system("CLS"); // vycistenie obrazovky
 }
-
-string checkForDotAndDecimals(string price) {
+// hladanie bodky a desatinnych miest v cisle
+string checkForDotAndDecimals(string price) { // parameter 
 	bool containsDot = false;
-	for (int i = 0; i < price.length(); i++)
+	for (int i = 0; i < price.length(); i++) // prechadzanie stringom
 	{
-		if (price[i] == '.')
+		if (price[i] == '.') // hladanie bodky
 		{
-			containsDot = true; 
+			containsDot = true; // prepisanie false na true
 			break;
 		}
 	}
-	if (!containsDot)
+	if (!containsDot) // kontrola ci neobsahuje bodku
 	{
-		price = price + ".00";
-		return price;
+		price = price + ".00"; // pridanie bodky a des. miest k cislu
 	}
-	return price;
+	return price; // navratova hodnota
 }
 
-void printFileContent(string fileName) {
-	ifstream fil;
+// vypisanie obsahu zo suboru
+void printFileContent(string fileName) { // parameter
+	ifstream fil; // ifstream na citanie suboru
 	fil.open(fileName);
-	if (!fil.is_open())
+	if (!fil.is_open()) // kontrola ci je subor otvoreny
 	{
-		fileCouldntBeOpened();
+		fileCouldntBeOpened(); // chybova hlaska
 	}
-	if (fileName == "Produkty.txt")
+	if (fileName == "Produkty.txt") // kontrola nazvu suboru
 	{
-		string line;
-		while (getline(fil, line))
+		string line; // premenna pre funkciu getline
+		while (getline(fil, line)) // prechadzanie suborom
 		{
-			cout << "\t\t\t" << line; printEuroSign();
+			cout << "\t\t\t" << line; printEuroSign(); // vypisovanie riadkov zo suboru
 		}
 	}
-	else if (fileName == "Products.txt")
+	else if (fileName == "Products.txt") 
 	{
 		string line;
 		while (getline(fil, line))
@@ -124,18 +124,18 @@ void printFileContent(string fileName) {
 			cout << "\t\t\t" << line << endl;
 		}
 	}
-	fil.close();
-	if (fil.is_open())
+	fil.close(); 
+	if (fil.is_open()) // kontrola ci je subor zatvoreny
 	{
-		fileCouldntBeClosed();
+		fileCouldntBeClosed(); // chybova hlaska
 	}
 }
 
 // vyberie data zo suboru ktore si vypytam
 string getReceiptData(string data) { // parameter pre hladanie dat
 	ifstream fin; // ifstream na citanie suboru
-	string fileName;
-	if (language == "sk")
+	string fileName; // nazov suboru
+	if (language == "sk") // vyber suboru na zakladne jazyka
 	{
 		fileName = "Udaje.txt";
 	}
@@ -171,47 +171,46 @@ string getReceiptData(string data) { // parameter pre hladanie dat
 }
 
 // vypocet delitela na ziskanie ceny bez DPH
-float countTaxDivisor() {
-	string DPH;
-	if (language == "sk")
+float countTaxDivisor() { 
+	string DPH; // premenna pre hodnotu dane
+	if (language == "sk") // overenie jazyka
 	{
-		DPH = getReceiptData("DPH");
+		DPH = getReceiptData("DPH"); // ziskanie hodnoty zo suboru
 	}
 	else
 	{
 		DPH = getReceiptData("TAX");
 	}
-	string dphNum = DPH;
-	float dphDivisor;
-	dphNum.pop_back();
-	try
+	string dphNum = DPH; // kopia premennej DPH
+	float dphDivisor; // delitel na vypocet DPH
+	dphNum.pop_back(); // odtranenie posledneho znaku v stringu
+	try // exception
 	{
-		dphDivisor = stof(dphNum);
+		dphDivisor = stof(dphNum); // konverzia stringu na float
 	}
-	catch (...)
+	catch (...) // pri neuspesnej konverzii
 	{
-		system("CLS");
-		if (language == "sk")
+		system("CLS"); // vycistenie obrazovky
+		if (language == "sk") // overenie jazyka
 		{
-			cout << "Neocakavana chyba pri konverzii" << endl;
+			cout << "Neocakavana chyba pri konverzii" << endl; // chybova hlaska
 		}
 		else
 		{
 			cout << "Unexpected error occured" << endl;
 		}
-		cin.get();
-		exit(0);
+		cin.get(); // pockanie na ENTER
+		exit(0); // opustenie programu
 	}
-	dphDivisor = dphDivisor / 100;
-	dphDivisor += 1;
-	return dphDivisor;
+	dphDivisor = (dphDivisor / 100 ) + 1; // vypocet delitela na vypocet DPH
+	return dphDivisor; // navratova hodnota
 }
 
 // zobrazenie stavu financii
 void viewStatus() {
 	system("CLS"); // vycistenie obrazovky
-	string tabs = "\t\t";
-	if (language == "sk")
+	string tabs = "\t\t"; // tabulatory
+	if (language == "sk") // overenie jazyka
 	{
 		cout << tabs << "$$$$$$$$$$$$$$$$$" << endl;
 		cout << tabs << "$ Prehlad trzby $" << endl;
@@ -243,11 +242,10 @@ void viewStatus() {
 
 // vypisanie hlavneho menu
 void mainMenu() {
-	
-	string tabs = "\t\t";
-	
-	if (language == "sk")
+	string tabs = "\t\t"; // tabulatory
+	if (language == "sk") // overenie jazyka
 	{
+		// vypisanie hlavneo menu
 		cout << tabs << tabs << "\t" << ":::::::::::::::::::::::::::::::" << endl;
 		cout << tabs << tabs << "\t" << "::::::::  Hlavne menu  ::::::::" << endl;
 		cout << tabs << tabs << "\t" << ":::::::::::::::::::::::::::::::" << endl << endl;
@@ -313,8 +311,8 @@ string checkForComma(string s) { // parameter typu string
 // skontrolovanie ci subor obsahuje produkt
 bool containsProduct(string productName) { // parameter typu string
 	ifstream fin; // ifstream na citanie suboru
-	string fileName;
-	if (language == "sk")
+	string fileName; // nazov suboru
+	if (language == "sk") // overenie jazyka
 	{
 		fileName = "Produkty.txt";
 	}
@@ -350,8 +348,8 @@ void checkout() {
 	vector<string> products; // vector na uskladnenie nablokovanych produktov
 	float price = 0; // vysledna cena
 	ifstream fin; // ifstream na citanie zo suboru
-	string fileName;
-	if (language == "sk")
+	string fileName; // nazov suboru
+	if (language == "sk") // overenie jazyka
 	{
 		fileName = "Produkty.txt";
 	}
@@ -453,7 +451,7 @@ void checkout() {
 				catch (...) // v pripade neuspesnej konverzie v bloku try
 				{
 					system("CLS"); // vycistenie obrazovky
-					if (language == "sk")
+					if (language == "sk") // overenie jazyka
 					{
 						cout << "Neocakavana chyba pri cene produktu" << endl; // chybova hlaska
 					}
@@ -520,7 +518,7 @@ void checkout() {
 		for (string i: products) // prechadzanie vectorom
 		{
 			cout << tab << i; // vypisovanie jednotlivych produktov a ich cien
-			if (language == "sk")
+			if (language == "sk") // oeverenie jazyka
 			{
 				printEuroSign(); // output eura
 			}
@@ -611,26 +609,26 @@ void checkout() {
 			}
 			else if (s == "1") // platba v hotovosti
 			{
-				string userCash;
-				float userCashFloat = 0;
+				string userCash; // uskladnenie inputu
+				float userCashFloat = 0; // input vo forme float
 				while (true)
 				{
-					if (language == "sk")
+					if (language == "sk") // overenie jazyka
 					{
-						cout << tabs <<  "Obdrzana suma: ";
+						cout << tabs <<  "Obdrzana suma: "; // info pre uzivatela
 					}
 					else
 					{
 						cout << tabs <<  "Received cash: ";
 					}
-					cin >> userCash;
-					try
+					cin >> userCash; // input 
+					try // exception
 					{
-						userCash = checkForComma(userCash);
-						userCashFloat = stof(userCash);
+						userCash = checkForComma(userCash); // kontrola ciarok v inpute
+						userCashFloat = stof(userCash); // konverzia stringu na float
 						break;
 					}
-					catch (...)
+					catch (...) // pri neuspesnej konverzii
 					{
 						if (language == "sk")
 						{
@@ -643,8 +641,8 @@ void checkout() {
 						continue;
 					}
 				}
-				float vydavok = userCashFloat - price;
-				if (vydavok >= 0)
+				float vydavok = userCashFloat - price; // vypocet vydavku
+				if (vydavok >= 0) // overenie ci je vydavok kladny
 				{
 					if (language == "sk")
 					{
@@ -656,22 +654,24 @@ void checkout() {
 						cout << tabs << "Change: " << vydavok << endl;
 						cout << tabs << "-> ";
 					}
-					cin.ignore();
-					cin.get();
+					cin.ignore(); // bez toho to nejde
+					cin.get(); // pockanie na ENTER
 					money += price; // pripocitanie penazi na nas ucet
-					numOfCheckouts++;
+					numOfCheckouts++; // pripocitanie hodnoty do celkoveho poctu nakupov
 					break; // opustenie cyklu
 				}
 				else
 				{
-					system("CLS");
+					system("CLS"); 
 					if (language == "sk")
 					{
-						cout << "Zakaznik dal malo penazi. Skuste inu moznost platby" << endl << endl;
+						cout << tabs << "Zakaznik dal malo penazi. Skuste inu moznost platby" << endl;
+						cout << tabs << "SUMA: " << price; printEuroSign(); cout << endl;
 					}
 					else
 					{
-						cout << "Customer hasn't paid enough. Try different payment method" << endl << endl;
+						cout << tabs << "Customer hasn't paid enough. Try different payment method" << endl;
+						cout << tabs << "SUM: " << price; cout << "$" << endl << endl;
 					}
 					continue;
 				}
@@ -752,7 +752,7 @@ void addProduct() {
 	system("CLS"); // vycistenie obrazovky
 	// fstream - multifunkcny. Citanie, pisanie, pridavanie
 	fstream fil; // fstream na citanie a aj na pridavanie do suboru
-	string fileName;
+	string fileName; // nazov suboru
 	if (language == "sk")
 	{
 		fileName = "Produkty.txt";
@@ -785,9 +785,9 @@ void addProduct() {
 		{
 			cout << tabs << "List of products: " << endl << endl;
 		}
-		printFileContent(fileName);
+		printFileContent(fileName); // vypisanie produktov zo suboru
 		cout << endl;
-		bool isValid = true;
+		bool isValid = true; 
 		if (language == "sk")
 		{
 			cout << tabs << "Zadajte nazov noveho produktu: "; // info pre uzivatela
@@ -881,7 +881,7 @@ void editProduct() {
 	string tabs = "\t\t";
 	system("CLS"); // vycistenie obrazovky
 	ifstream fin; // ifstream na citanie suboru
-	string fileName;
+	string fileName; // nazov suboru
 	if (language == "sk")
 	{
 		fileName = "Produkty.txt";
@@ -906,7 +906,6 @@ void editProduct() {
 	}
 	while (true) 
 	{
-		//TODO
 		string line;
 		if (language == "sk")
 		{
@@ -1068,7 +1067,7 @@ void removeProduct() {
 	string tabs = "\t\t";
 	system("CLS"); // vycistenie obrazovky
 	ifstream fin; // ifstream na citanie suboru
-	string fileName;
+	string fileName; // nazov suboru
 	if (language == "sk")
 	{
 		fileName = "Produkty.txt";
@@ -1096,7 +1095,7 @@ void removeProduct() {
 	if(fin.is_open()) // kontrola, ci je subor otvoreny
 	{
 		string line; // premenna pre funkciu getline
-		printFileContent(fileName);
+		printFileContent(fileName); // vypisanie produktov zo suboru
 		fin.close(); // zatvorenie suboru
 		if (fin.is_open()) // kontorola ci je subor zatvoreny
 			fileCouldntBeClosed();
@@ -1155,11 +1154,11 @@ void removeProduct() {
 
 // zmena udajov pre blociky
 void changeReceiptData(bool isEmpty) { // parameter funkcie
-	string tabs = "\t\t";
+	string tabs = "\t\t"; // tabulatory
 	system("CLS"); // vycistenie obrazovky
 	ofstream temp; // ofstream na zapisovanie do suboru
 	ifstream fin; // ifstream na citanie suboru
-	string fileName;
+	string fileName; // nazov suboru
 	if (language == "sk")
 	{
 		fileName = "Udaje.txt";
@@ -1182,7 +1181,6 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 			cout << tabs << "* Change receipt data *" << endl; // GUI prvok
 			cout << tabs << "***********************" << endl << endl;
 		}
-		
 	}
 	else // ak je subor prazdny
 	{
@@ -1210,8 +1208,8 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	{
 		cout << tabs << "Current data: " << endl << endl; // info pre uzivatela
 	}
-	printFileContent(fileName);
-	cout << tabs << endl;
+	printFileContent(fileName); // vypisanie produktov zo suboru
+	cout << endl; 
 	fin.close(); // zatvorenie suboru
 	if (fin.is_open()) // kontrola ci je subor zatvoreny
 		fileCouldntBeClosed(); // chybova funkcia
@@ -1321,8 +1319,8 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 } 
 
 // zmena prihlasovacich udajov
-void changeLoginData(bool isEmpty) {
-	string tabs = "\t\t";
+void changeLoginData(bool isEmpty) { // parameter
+	string tabs = "\t\t"; // tabulatory
 	system("CLS"); // vycistenie obrazovky
 	if (!isEmpty)  // ak subor nie je prazdny 
 	{
@@ -1391,8 +1389,8 @@ void changeLoginData(bool isEmpty) {
 }
 
 void loginSystem() {
-	string tabs = "\t\t";
-	system("CLS");
+	string tabs = "\t\t"; // tabulatory
+	system("CLS"); // vycistenie obraovky
 	if (language == "sk")
 	{
 		cout << tabs << "**********************************************" << endl;
@@ -1451,7 +1449,7 @@ void loginSystem() {
 						cout << tabs << "Unauthorized access detected" << endl; // info pre uzivatela
 					}
 					fin.close(); // zatvorenie suboru
-					cin.get();
+					cin.get(); // cakanie na ENTER
 					exit(0); // vypnutie programu
 				}
 			}
@@ -1527,7 +1525,7 @@ int checkIfFileIsEmpty(string fileName) { // parameter funkcie
 }
 
 int main() {
-	selectLanguage();
+	selectLanguage(); // vyber jazyka
 	int isFileEmpty = checkIfFileIsEmpty("AdminLogin.txt"); // kontrola ci je subor prazdny
 	int filLineCount = checkFileLines("AdminLogin.txt"); // kontrola poctu riadkov suboru
 	string tabs = "\t\t";
@@ -1628,7 +1626,7 @@ int main() {
 		}
 		else if (intMenuInput == 3)
 		{
-			string fileName;
+			string fileName; // nazov suboru
 			if (language == "sk")
 			{
 				fileName = "Produkty.txt";
@@ -1647,7 +1645,7 @@ int main() {
 		}
 		else if (intMenuInput == 4)
 		{
-			string fileName;
+			string fileName; // nazov suboru
 			if (language == "sk")
 			{
 				fileName = "Produkty.txt";
@@ -1656,10 +1654,10 @@ int main() {
 			{
 				fileName = "Products.txt";
 			}
-			if (checkIfFileIsEmpty(fileName) == 0)
+			if (checkIfFileIsEmpty(fileName) == 0) // kontrola ci je subor prazdny
 			{
-				addProduct();
-				continue;
+				addProduct(); // pridanie produktu
+				continue; // navrat na zaciatok cyklu
 			}
 			editProduct(); // upravenie produktu
 			continue; // navrat na zaciatok cyklu
@@ -1667,7 +1665,7 @@ int main() {
 		else if (intMenuInput == 5)
 		{
 			loginSystem(); // autentifikacia
-			string fileName;
+			string fileName; // nazov suboru
 			if (language == "sk")
 			{
 				fileName = "Udaje.txt";
@@ -1695,10 +1693,10 @@ int main() {
 			viewStatus(); // zavolanie funkcie na zobrazenie informacii o stave financii
 			continue; // navrat na zaciatok cyklu
 		}
-		else if (intMenuInput == 8)
+		else if (intMenuInput == 8) 
 		{
-			selectLanguage();
-			continue; 
+			selectLanguage(); // zavolanie funkcie na zmenu jazyka
+			continue; // navrat na zaciatok cyklu
 		}
 		else if (intMenuInput == 9)
 		{
