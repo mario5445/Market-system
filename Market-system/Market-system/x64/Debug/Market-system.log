@@ -1,4 +1,3 @@
 ﻿  Market-system.cpp
-C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\Market-system\Market-system.cpp(1503,10): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
-C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\Market-system\Market-system.cpp(1470): warning C4715: 'loginSystem': not all control paths return a value
+C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\Market-system\Market-system.cpp(1483,10): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
   Market-system.vcxproj -> C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\x64\Debug\Market-system.exe

@@ -134,16 +134,30 @@ void printFileContent(string fileName) { // parameter
 }
 
 // vyberie data zo suboru ktore si vypytam
-string getReceiptData(string data) { // parameter pre hladanie dat
+string getData(string data, string typeOfData) { // parameter pre hladanie dat
 	ifstream fin; // ifstream na citanie suboru
 	string fileName; // nazov suboru
-	if (language == "sk") // vyber suboru na zakladne jazyka
+	if (typeOfData == "receipt")
 	{
-		fileName = "Udaje.txt";
+		if (language == "sk") // vyber suboru na zakladne jazyka
+		{
+			fileName = "Udaje.txt";
+		}
+		else
+		{
+			fileName = "Data.txt";
+		}
+	}
+	else if (typeOfData == "login")
+	{
+		fileName = "AdminLogin.txt";
 	}
 	else
 	{
-		fileName = "Data.txt";
+		cout << "Chyba pri type pozadovanych dat";
+		cin.ignore();
+		cin.get();
+		exit(0);
 	}
 	fin.open(fileName); // otvorenie suboru
 	if (!fin.is_open()) // overenie ci je subor otvoreny
@@ -177,11 +191,11 @@ float countTaxDivisor() {
 	string DPH; // premenna pre hodnotu dane
 	if (language == "sk") // overenie jazyka
 	{
-		DPH = getReceiptData("DPH"); // ziskanie hodnoty zo suboru
+		DPH = getData("DPH", "receipt"); // ziskanie hodnoty zo suboru
 	}
 	else
 	{
-		DPH = getReceiptData("TAX");
+		DPH = getData("TAX", "receipt");
 	}
 	string dphNum = DPH; // kopia premennej DPH
 	float dphDivisor; // delitel na vypocet DPH
@@ -222,7 +236,7 @@ void viewStatus() {
 		cout << tabs << "Celkova trzba: " << money; printEuroSign(); // celkova trzba
 		// funkcia ceil - zaokruhlenie
 		cout << tabs << "Celkova trzba bez DPH: " << ceil((money / countTaxDivisor()) * 100) / 100; printEuroSign(); // vypocet ceny bez DPH
-		cout << tabs << "Sadzba DPH: " << getReceiptData("DPH") << endl; // dph sadzba
+		cout << tabs << "Sadzba DPH: " << getData("DPH", "receipt") << endl; // dph sadzba
 		cout << tabs << "Celkova DPH: " << ceil((money - (money / countTaxDivisor())) * 100) / 100; printEuroSign(); // vypocet celkovej DPH
 		cout << tabs << "Pre opustenie stlacte ENTER -> "; // info pre uzivatela
 	}
@@ -235,7 +249,7 @@ void viewStatus() {
 		cout << tabs << "Total sales: " << money << "$" << endl; // celkova trzba
 		// funkcia ceil - zaokruhlenie
 		cout << tabs << "Total sales without taxes: " << ceil((money / countTaxDivisor()) * 100) / 100 << "$" << endl; // vypocet ceny bez DPH
-		cout << tabs << "Tax: " << getReceiptData("TAX") << endl; // dph sadzba
+		cout << tabs << "Tax: " << getData("TAX", "receipt") << endl; // dph sadzba
 		cout << tabs << "Total taxes: " << ceil((money - (money / countTaxDivisor())) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
 		cout << tabs << "Press ENTER to exit -> "; // info pre uzivatela
 	}
@@ -503,18 +517,18 @@ void checkout() {
 		if (language == "sk")
 		{
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
-			cout << tab << getReceiptData("Nazov") << endl << endl; // vypytanie si Nazvu zo suboru a vypisanie 
-			cout << tab << getReceiptData("Adresa") << endl; // vypytanie si Adresy zo suboru a vypisanie
-			cout << tab << "ICO: " << getReceiptData("ICO") << endl; // vypytanie si ICO zo suboru a vypisanie
+			cout << tab << getData("Nazov", "receipt") << endl << endl; // vypytanie si Nazvu zo suboru a vypisanie 
+			cout << tab << getData("Adresa", "receipt") << endl; // vypytanie si Adresy zo suboru a vypisanie
+			cout << tab << "ICO: " << getData("ICO", "receipt") << endl; // vypytanie si ICO zo suboru a vypisanie
 			cout << tab << getActualTime(); // vypisanie aktualneho casu
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
 		}
 		else
 		{
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
-			cout << tab << getReceiptData("Name") << endl << endl; // vypytanie si Nazvu zo suboru a vypisanie 
-			cout << tab << getReceiptData("Adress") << endl; // vypytanie si Adresy zo suboru a vypisanie
-			cout << tab << "ID: " << getReceiptData("ID") << endl; // vypytanie si ICO zo suboru a vypisanie
+			cout << tab << getData("Name", "receipt") << endl << endl; // vypytanie si Nazvu zo suboru a vypisanie 
+			cout << tab << getData("Adress", "receipt") << endl; // vypytanie si Adresy zo suboru a vypisanie
+			cout << tab << "ID: " << getData("ID", "receipt") << endl; // vypytanie si ICO zo suboru a vypisanie
 			cout << tab << getActualTime(); // vypisanie aktualneho casu
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
 		}
@@ -537,7 +551,7 @@ void checkout() {
 			printEuroSign(); // output eura
 			cout << endl << tab << "Suma bez DPH" << "\t\t" << ceil((price / countTaxDivisor()) * 100) / 100; // vypocet ceny bez DPH
 			printEuroSign(); // output eura
-			cout << tab << "Sadzba DPH:\t\t" << getReceiptData("DPH") << endl; // vypisanie sadzby DPH 
+			cout << tab << "Sadzba DPH:\t\t" << getData("DPH", "receipt") << endl; // vypisanie sadzby DPH 
 			cout << tab << "DPH:\t\t\t" << ceil((price - (price / countTaxDivisor())) * 100) / 100; // vypocet DPH
 			printEuroSign(); // output eura
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
@@ -550,7 +564,7 @@ void checkout() {
 			cout << "$" << endl; // output eura
 			cout << endl << tab << "SUM without TAX" << "\t\t" << ceil((price / countTaxDivisor()) * 100) / 100; // vypocet ceny bez DPH
 			cout << "$" << endl; // output eura
-			cout << tab << "TAX:\t\t\t" << getReceiptData("TAX") << endl; // vypisanie sadzby DPH 
+			cout << tab << "TAX:\t\t\t" << getData("TAX", "receipt") << endl; // vypisanie sadzby DPH 
 			cout << tab << "Total TAX:\t\t" << ceil((price - (price / countTaxDivisor())) * 100) / 100; // vypocet DPH
 			cout << "$" << endl; // output eura
 			cout << tab << "----------------------------------------------" << endl; // GUI prvok
@@ -1174,9 +1188,9 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	{
 		if (language == "sk")
 		{
-			cout << tabs << "****************************" << endl;
-			cout << tabs << "* Zmena udajov pre blociky *" << endl; // GUI prvok
-			cout << tabs << "****************************" << endl << endl;
+			cout << tabs << "************************************" << endl;
+			cout << tabs << "* Zmena udajov pre nakupne doklady *" << endl; // GUI prvok
+			cout << tabs << "************************************" << endl << endl;
 		}
 		else
 		{
@@ -1189,9 +1203,9 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	{
 		if (language == "sk")
 		{
-			cout << tabs << "****************************************" << endl;
-			cout << tabs << "* Nastavenie novych udajov pre blociky *" << endl; // GUI prvok
-			cout << tabs << "****************************************" << endl << endl;
+			cout << tabs << "************************************************" << endl;
+			cout << tabs << "* Nastavenie novych udajov pre nakupne doklady *" << endl; // GUI prvok
+			cout << tabs << "************************************************" << endl << endl;
 		}
 		else
 		{
@@ -1371,102 +1385,68 @@ void changeLoginData(bool isEmpty) { // parameter
 		cout << tabs << "Enter new password: "; // vypytanie si hesla od uzivatela
 	}
 	cin >> passwordData; // uskladnenie inputu do jednej z premennych
-	//TODO
-	temp.open("temp.txt"); // otvorenie suboru ofstreamom
+	temp.open("AdminLogin.txt"); // otvorenie suboru ofstreamom
 	if (temp.is_open()) // kontrola ci je subor otvoreny
 	{
-		temp << loginData << endl; // zapisanie loginu do suboru temp.txt
-		temp << passwordData; // zapisanie hesla do suboru temp.txt
+		temp << "Login:\t" << loginData << endl; // zapisanie loginu do suboru temp.txt
+		temp << "Password:\t" << passwordData; // zapisanie hesla do suboru temp.txt
 		temp.close(); // zatvorenie suboru
 		if (temp.is_open()) // kontrola ci je subor zatvoreny
 			fileCouldntBeClosed(); // chybova funkcia
-		else
-		{
-			remove("AdminLogin.txt"); // odstranenie povodneho suboru AdminLogin.txt
-			rename("temp.txt", "AdminLogin.txt"); // premenovanie docasneho suboru temp.txt na AdminLogin.txt
-		}
 	}
 	else
 		fileCouldntBeOpened(); // chybova funkcia
 	system("CLS"); // vycistenie obrazovky
 }
 
-bool loginSystem() {
+void loginSystem() {
 	string tabs = "\t\t"; // tabulatory
 	system("CLS"); // vycistenie obraovky
-	if (language == "sk")
-	{
-		cout << tabs << "**********************************************" << endl;
-		cout << tabs << "* Najskor sa prihlaste, ak chcete pokracovat *" << endl; // GUI prvok
-		cout << tabs << "**********************************************" << endl << endl;
-	}
-	else
-	{
-		cout << tabs << "*****************************" << endl;
-		cout << tabs << "* Login before you continue *" << endl; // GUI prvok
-		cout << tabs << "*****************************" << endl << endl;
-	}
-	int counter = 0; // pomocou counteru program vie ci ma overit login alebo heslo
-	ifstream fin; // ifstream - subor je len na citanie
 	string loginstr; // uskladnenie inputu
 	string passwordstr; // uskladnenie inputu
-	// Login form
+	string correctLogin = getData("Login", "login");
+	string correctPassword = getData("Password", "login");
+	for (int i = 0; i < 3; i++)
+	{
+		if (language == "sk")
+		{
+			cout << tabs << "**********************************************" << endl;
+			cout << tabs << "* Najskor sa prihlaste, ak chcete pokracovat *" << endl; // GUI prvok
+			cout << tabs << "**********************************************" << endl << endl;
+			cout << tabs << "Login: "; // info pre uzivatela
+			cin >> loginstr; // input
+			cout << tabs << "Heslo: "; // info pre uzivatela
+		}
+		else
+		{
+			cout << tabs << "*****************************" << endl;
+			cout << tabs << "* Login before you continue *" << endl; // GUI prvok
+			cout << tabs << "*****************************" << endl << endl;
+			cout << tabs << "Login: "; // info pre uzivatela
+			cin >> loginstr; // input
+			cout << tabs << "Password: "; // info pre uzivatela
+		}
+		cin >> passwordstr; // input
+		if (loginstr == correctLogin && passwordstr == correctPassword)
+		{
+			system("CLS");
+			return;
+		}
+		system("CLS");
+	}
+	// tato cast sa spusti ak je nespravny login alebo heslo
+	system("CLS"); // vycistenie obrazovky
 	if (language == "sk")
 	{
-		cout << tabs << "Login: "; // info pre uzivatela
-		cin >> loginstr; // input
-		cout << tabs << "Heslo: "; // info pre uzivatela
+		cout << "Zistili sme neopravneny pristup" << endl; // info pre uzivatela
 	}
 	else
 	{
-		cout << tabs << "Login: "; // info pre uzivatela
-		cin >> loginstr; // input
-		cout << tabs << "Password: "; // info pre uzivatela
+		cout << "Unauthorized access detected" << endl; // info pre uzivatela
 	}
-	cin >> passwordstr; // input
-	fin.open("AdminLogin.txt"); // otvorenie suboru
-	if (fin.is_open()) // overenie ci sa subor podarilo otvorit
-	{
-		while (!fin.eof()) // cyklus, ktory ide po jednotlivych riadkoch textoveho suboru. podmienka je splnena ak nie je este koniec suboru
-		{
-			char arr[50]; // funkcia getline uklada riadok do pola typu char
-			fin.getline(arr, 50); // prvy argument hovori, kde sa ma riadok ulozit a druhy hovori o jeho dlzke, ktora je relativna
-			string arra = arr; // konverzia pola typu char na string. Toto je mozne lebo string je v podstate pole znakov
-			if (counter == 0) // program sa rozhodne na zaklade counteru, co skontroluje
-			{
-				if (arra == loginstr) // kedze ideme v textovom subore po riadkoch tak najskor musi skontrolovat login
-					counter++; // inkrementacia counteru
-				else
-				{
-					fin.close(); // zatvorenie suboru
-					if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
-						fileCouldntBeClosed(); // chybova funkcia
-					return false;
-				}
-			}
-			else if(counter == 1) 
-			{
-				if (arra == passwordstr) // program skontroluje heslo
-				{
-					// zatvorenie suboru
-					fin.close(); // zatvorenie suboru
-					if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
-						fileCouldntBeClosed(); // chybova funkcia
-					system("CLS"); // vycistenie obrazovky
-					return true;
-				}	
-				else
-				{
-					fin.close(); // zatvorenie suboru
-					if (fin.is_open()) // overenie ci je subor skutocne zatvoreny
-						fileCouldntBeClosed(); // chybova funkcia
-					return false;
-				}
-			}
-		}
-	}
-	else
-		fileCouldntBeOpened(); // chybova funkcia
+	cin.ignore();
+	cin.get();
+	exit(0); // vypnutie programu
 } 
 
 // skontroluje kolko ma subor riadkov. Vrati int
@@ -1509,37 +1489,9 @@ int checkIfFileIsEmpty(string fileName) { // parameter funkcie
 
 int main() {
 	selectLanguage(); // vyber jazyka
-	int isFileEmpty = checkIfFileIsEmpty("AdminLogin.txt"); // kontrola ci je subor prazdny
-	int filLineCount = checkFileLines("AdminLogin.txt"); // kontrola poctu riadkov suboru
 	string tabs = "\t\t";
-	if (isFileEmpty != 0 && filLineCount != 0) // kontrola ci je subor prazdny alebo ma malo riadkov
-	{
-		bool isValid = false;
-		for (int i = 0; i < 3; i++)
-		{
-			if (loginSystem())
-			{
-				isValid = true;
-				break;
-			}
-		}
-		if (!isValid)
-		{
-			// tato cast sa spusti ak je nespravny login alebo heslo
-			system("CLS"); // vycistenie obrazovky
-			if (language == "sk")
-			{
-				cout << "Zistili sme neopravneny pristup" << endl; // info pre uzivatela
-			}
-			else
-			{
-				cout << "Unauthorized access detected" << endl; // info pre uzivatela
-			}
-			cin.ignore();
-			cin.get();
-			exit(0); // vypnutie programu
-		}
-	}
+	if (checkIfFileIsEmpty("AdminLogin.txt") != 0 && checkFileLines("AdminLogin.txt") != 0) // kontrola ci je subor prazdny alebo ma malo riadkov
+		loginSystem();
 	else
 		changeLoginData(true); // zmena prihlasovacich udajov
 	// uvitanie pouzivatela
@@ -1685,7 +1637,7 @@ int main() {
 			}
 			int isEmpty = checkIfFileIsEmpty(fileName); // kontrola ci je subor prazdny
 			int lineCount = checkFileLines(fileName); // kontrola poctu riadkov subora
-			if (isEmpty != 0 || lineCount != 0 || lineCount != 1) // kontrola ci je subor prazdny alebo ma malo riadkov
+			if (isEmpty != 0 && lineCount != 0 && lineCount != 1) // kontrola ci je subor prazdny alebo ma malo riadkov
 				changeReceiptData(false); // zmena udajov pre nakupne doklady s parametrom false
 			else
 				changeReceiptData(true); // zmena udajov pre nakupne doklady s parametrom true
