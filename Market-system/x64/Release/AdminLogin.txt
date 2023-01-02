@@ -1,2 +1,2 @@
-admin
-admin123
+Login:	admin
+Password:	admin123
