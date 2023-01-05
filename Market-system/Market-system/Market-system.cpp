@@ -1467,7 +1467,7 @@ int checkFileLines(string fileName) { // paramter funkcie
 		fileCouldntBeClosed(); // chybova funkcia
 	if (counter < 2) // kontrola ci ma subor 1 riadok a menej. Pre loginSystem()
 		return 0; // navratova hodnota
-	else if (counter == 2) // pre changeReceiptData()
+	else if (counter <= 3) // pre changeReceiptData()
 		return 1; // navratova hodnota
 	else
 		return 2; // navratova hodnota
