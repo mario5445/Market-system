@@ -79,17 +79,38 @@ void selectLanguage() {
 // hladanie bodky a desatinnych miest v cisle
 string checkForDotAndDecimals(string price) { // parameter 
 	bool containsDot = false;
+	bool containsMoreDots = false;
+	int counter = 0;
+	int dotCounter = 0;
 	for (int i = 0; i < price.length(); i++) // prechadzanie stringom
-	{
+	{	
 		if (price[i] == '.') // hladanie bodky
 		{
 			containsDot = true; // prepisanie false na true
-			break;
+			dotCounter++;
 		}
+		if (containsDot)
+		{
+			counter++;
+		}
+	}
+	if (dotCounter > 1)
+	{
+		containsMoreDots = true;
+		price.pop_back();
+		price = checkForDotAndDecimals(price);
+	}
+	if (containsMoreDots)
+	{
+		price = price + "00";
 	}
 	if (!containsDot) // kontrola ci neobsahuje bodku
 	{
 		price = price + ".00"; // pridanie bodky a des. miest k cislu
+	}
+	if (counter > 3)
+	{
+		price = ceil(stoi(price) * 100) / 100;
 	}
 	return price; // navratova hodnota
 }
@@ -819,7 +840,6 @@ void addProduct() {
 		}
 		cin >> userProductPrice; // input
 		userProductPrice = checkForComma(userProductPrice); // hladanie ciarky v cene a jej nahradenie
-		userProductPrice = checkForDotAndDecimals(userProductPrice);
 		try // exception
 		{
 			float checkFloat = stof(userProductPrice); // konverzia na float aby sme zistili ci uzivatel zadal platnu cenu
@@ -839,6 +859,7 @@ void addProduct() {
 			fileCouldntBeClosed(); // chybova funkcia
 		if (!isDuplicate && isValid) // ak nie je duplikat a ak je validny
 		{
+			userProductPrice = checkForDotAndDecimals(userProductPrice);
 			fil.open(fileName, ios::app); // otvorenie suboru na pridavanie - ios::app - append
 			if (!fil.is_open()) // kontrola ci je subor otvoreny
 				fileCouldntBeOpened(); // chybova funkcia
@@ -965,7 +986,6 @@ void editProduct() {
 			}
 			cin >> userProductPrice; // input
 			userProductPrice = checkForComma(userProductPrice); // kontrola ci zadana cena obsahuje ciarku a jej nahradenie za bodku
-			userProductPrice = checkForDotAndDecimals(userProductPrice); // kontrola ci ma cena desatinne miesta a bodku pre lepsie zobrazenie
 			try // exception
 			{
 				float checkFloat = stof(userProductPrice); // konverzia stringu na float pre overenie ci uzivatel zadal validnu cenu
@@ -974,8 +994,10 @@ void editProduct() {
 			{
 				isValid = false; // prepisane true na false
 			}
+			
 			if (isValid) // ak je input validny
 			{
+				userProductPrice = checkForDotAndDecimals(userProductPrice); // kontrola ci ma cena desatinne miesta a bodku pre lepsie zobrazenie
 				fin.open(fileName); // otvorenie suboru
 				if (!fin.is_open()) // kontorola ci je subor otvoreny
 					fileCouldntBeOpened(); // chybova funkcia

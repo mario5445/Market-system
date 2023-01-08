@@ -1,7 +1,13 @@
 ﻿  Market-system.cpp
-C:\_Jarino\Škola\Programovanie\Market-system\Market-system\Market-system\Market-system.cpp(1483,10): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
+C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\Market-system\Market-system.cpp(113,35): warning C4244: 'argument': conversion from 'double' to 'const _Elem', possible loss of data
+          with
+          [
+              _Elem=char
+          ]
+C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\Market-system\Market-system.cpp(1505,10): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
   Generating code
-  Previous IPDB was built with incompatible compiler, fall back to full compilation.
-  All 1012 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  4 of 1018 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    11 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  Market-system.vcxproj -> C:\_Jarino\Škola\Programovanie\Market-system\Market-system\x64\Release\Market-system.exe
+  Market-system.vcxproj -> C:\Users\Lenovo\Desktop\GitHub\Market-system\Market-system\x64\Release\Market-system.exe
