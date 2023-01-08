@@ -6,6 +6,8 @@
 #include <ctime>
 #include <io.h>
 #include <fcntl.h>
+#include <sstream>
+#include <iomanip>
 #pragma warning(disable : 4996) // vypnutie 4996 aby fungovala funkcia getActualTime()
 
 using namespace std;
@@ -89,10 +91,6 @@ string checkForDotAndDecimals(string price) { // parameter
 			containsDot = true; // prepisanie false na true
 			dotCounter++;
 		}
-		if (containsDot)
-		{
-			counter++;
-		}
 	}
 	if (dotCounter > 1)
 	{
@@ -108,10 +106,10 @@ string checkForDotAndDecimals(string price) { // parameter
 	{
 		price = price + ".00"; // pridanie bodky a des. miest k cislu
 	}
-	if (counter > 3)
-	{
-		price = ceil(stoi(price) * 100) / 100;
-	}
+	float priceFloat = stof(price);
+	stringstream stream;
+	stream << fixed << setprecision(2) << priceFloat;
+	price = stream.str();
 	return price; // navratova hodnota
 }
 
