@@ -81,18 +81,17 @@ void selectLanguage() {
 // hladanie bodky a desatinnych miest v cisle
 string checkForDotAndDecimals(string price) { // parameter 
 	bool containsDot = false;
-	bool containsMoreDots = false;
-	int counter = 0;
-	int dotCounter = 0;
+	bool containsMoreDots = false;	
+	//int dotCounter = 0;
 	for (int i = 0; i < price.length(); i++) // prechadzanie stringom
 	{	
 		if (price[i] == '.') // hladanie bodky
 		{
 			containsDot = true; // prepisanie false na true
-			dotCounter++;
+			//dotCounter++;
 		}
 	}
-	if (dotCounter > 1)
+	/*if (dotCounter > 1)
 	{
 		containsMoreDots = true;
 		price.pop_back();
@@ -101,7 +100,7 @@ string checkForDotAndDecimals(string price) { // parameter
 	if (containsMoreDots)
 	{
 		price = price + "00";
-	}
+	}*/
 	if (!containsDot) // kontrola ci neobsahuje bodku
 	{
 		price = price + ".00"; // pridanie bodky a des. miest k cislu
@@ -657,10 +656,10 @@ void checkout() {
 					{
 						cout << tabs <<  "Received cash: ";
 					}
-					cin >> userCash; // input 
+					cin >> userCash;
+					userCash = checkForComma(userCash); // kontrola ciarok v inpute
 					try // exception
 					{
-						userCash = checkForComma(userCash); // kontrola ciarok v inpute
 						userCashFloat = stof(userCash); // konverzia stringu na float
 						break;
 					}
@@ -676,7 +675,9 @@ void checkout() {
 						}
 						continue;
 					}
+					 
 				}
+				userCash = checkForDotAndDecimals(userCash);
 				float vydavok = userCashFloat - price; // vypocet vydavku
 				if (vydavok >= 0) // overenie ci je vydavok kladny
 				{
@@ -846,6 +847,20 @@ void addProduct() {
 		{
 			isValid = false; // prepisanie true na false
 		}
+		for (int i = 0; i < userProductPrice.length(); i++)
+		{
+			try
+			{
+				if (userProductPrice[i] == '.' && userProductPrice[i+1] == '.')
+				{
+					isValid = false;
+				}
+			}
+			catch (...)
+			{
+
+			}
+		}
 		fil.open(fileName, ios::in); // otvorenie suboru na citanie - ios::in
 		if (!fil.is_open()) // kontrola ci je subor otvoreny
 			fileCouldntBeOpened(); // chybova funkcia
@@ -992,7 +1007,20 @@ void editProduct() {
 			{
 				isValid = false; // prepisane true na false
 			}
-			
+			for (int i = 0; i < userProductPrice.length(); i++)
+			{
+				try
+				{
+					if (userProductPrice[i] == '.' && userProductPrice[i + 1] == '.')
+					{
+						isValid = false;
+					}
+				}
+				catch (...)
+				{
+
+				}
+			}
 			if (isValid) // ak je input validny
 			{
 				userProductPrice = checkForDotAndDecimals(userProductPrice); // kontrola ci ma cena desatinne miesta a bodku pre lepsie zobrazenie
@@ -1257,7 +1285,7 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	if (language == "sk")
 	{
 		cout << tabs << "Zadajte novy nazov obchodu: "; // info pre uzivatela
-		cin.ignore(); // na ignorovanie noveho riadku. Program by bez toho nefungoval
+		//cin.ignore(); // na ignorovanie noveho riadku. Program by bez toho nefungoval
 		getline(cin, userName); // input celeho riadku nie len jedneho slova
 		cout << tabs << "Zadajte novu adresu: "; // info pre uzivatela
 		getline(cin, userAdress); // input celeho riadku nie len jedneho slova
@@ -1489,7 +1517,7 @@ int checkFileLines(string fileName) { // paramter funkcie
 		return 0; // navratova hodnota
 	else if (counter <= 3) // pre changeReceiptData()
 		return 1; // navratova hodnota
-	else
+	else 
 		return 2; // navratova hodnota
 }
 
@@ -1507,7 +1535,8 @@ int checkIfFileIsEmpty(string fileName) { // parameter funkcie
 	return len; // navratova hodnota
 }
 
-int main() {
+int main() 
+{
 	selectLanguage(); // vyber jazyka
 	string tabs = "\t\t";
 	if (checkIfFileIsEmpty("AdminLogin.txt") != 0 && checkFileLines("AdminLogin.txt") != 0) // kontrola ci je subor prazdny alebo ma malo riadkov
@@ -1595,8 +1624,24 @@ int main() {
 			}
 			int isEmpty = checkIfFileIsEmpty(fileName); // kontrola suboru ci je prazdny
 			int lineCount = checkFileLines(fileName); // kontrola poctu riadkov v subore
-			if (isEmpty == 0 || (lineCount == 0 || lineCount == 1)) // kontrola ci nie je subor prazdny alebo ma malo riadkov
+			if (isEmpty == 0 || (lineCount == 0 || lineCount == 1)) { // kontrola ci nie je subor prazdny alebo ma malo riadkov
 				changeReceiptData(true); // zmena udajov pre nakupny doklad
+				cin.ignore();
+			}
+			if (language == "sk")
+			{
+				fileName = "Produkty.txt";
+			}
+			else
+			{
+				fileName = "Products.txt";
+			}
+			isEmpty = checkIfFileIsEmpty(fileName); // kontrola suboru ci je prazdny
+			lineCount = checkFileLines(fileName); // kontrola poctu riadkov v subore
+			if (isEmpty == 0 || (lineCount == 0)) { // kontrola ci nie je subor prazdny alebo ma malo riadkov
+				addProduct();
+				continue;
+			}
 			checkout(); // blokovanie produktov
 			continue; // navrat na zaciatok cyklu
 		}
@@ -1646,6 +1691,7 @@ int main() {
 		else if (intMenuInput == 5)
 		{
 			loginSystem(); // autentifikacia
+			cin.ignore();
 			string fileName; // nazov suboru
 			if (language == "sk")
 			{
@@ -1657,7 +1703,7 @@ int main() {
 			}
 			int isEmpty = checkIfFileIsEmpty(fileName); // kontrola ci je subor prazdny
 			int lineCount = checkFileLines(fileName); // kontrola poctu riadkov subora
-			if (isEmpty != 0 && lineCount != 0 && lineCount != 1) // kontrola ci je subor prazdny alebo ma malo riadkov
+			if (isEmpty != 0 && lineCount != 0 && lineCount != 1 && lineCount != 2) // kontrola ci je subor prazdny alebo ma malo riadkov
 				changeReceiptData(false); // zmena udajov pre nakupne doklady s parametrom false
 			else
 				changeReceiptData(true); // zmena udajov pre nakupne doklady s parametrom true
