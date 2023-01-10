@@ -11,6 +11,7 @@ mineralka		0.55
 kajzerka		0.17
 vajcia			1.20
 mlieko			1.00
-caj			1.00
 pivo			0.79
 radler			1.00
+mikina			12.50
+caj			1.00

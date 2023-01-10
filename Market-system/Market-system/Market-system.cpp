@@ -81,7 +81,7 @@ void selectLanguage() {
 // hladanie bodky a desatinnych miest v cisle
 string checkForDotAndDecimals(string price) { // parameter 
 	bool containsDot = false;
-	bool containsMoreDots = false;	
+	//bool containsMoreDots = false;	
 	//int dotCounter = 0;
 	for (int i = 0; i < price.length(); i++) // prechadzanie stringom
 	{	
@@ -105,10 +105,10 @@ string checkForDotAndDecimals(string price) { // parameter
 	{
 		price = price + ".00"; // pridanie bodky a des. miest k cislu
 	}
-	float priceFloat = stof(price);
+	/*float priceFloat = stof(price);
 	stringstream stream;
 	stream << fixed << setprecision(2) << priceFloat;
-	price = stream.str();
+	price = stream.str();*/
 	return price; // navratova hodnota
 }
 
@@ -256,6 +256,7 @@ void viewStatus() {
 		cout << tabs << "Celkova trzba bez DPH: " << ceil((money / countTaxDivisor()) * 100) / 100; printEuroSign(); // vypocet ceny bez DPH
 		cout << tabs << "Sadzba DPH: " << getData("DPH", "receipt") << endl; // dph sadzba
 		cout << tabs << "Celkova DPH: " << ceil((money - (money / countTaxDivisor())) * 100) / 100; printEuroSign(); // vypocet celkovej DPH
+		cout << tabs << "Priemerna hodnota nakupu: " << ceil((money / numOfCheckouts) * 100) / 100; printEuroSign();
 		cout << tabs << "Pre opustenie stlacte ENTER -> "; // info pre uzivatela
 	}
 	else
@@ -269,6 +270,7 @@ void viewStatus() {
 		cout << tabs << "Total sales without taxes: " << ceil((money / countTaxDivisor()) * 100) / 100 << "$" << endl; // vypocet ceny bez DPH
 		cout << tabs << "Tax: " << getData("TAX", "receipt") << endl; // dph sadzba
 		cout << tabs << "Total taxes: " << ceil((money - (money / countTaxDivisor())) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
+		cout << tabs << "Average purchase value: " << ceil((money / numOfCheckouts) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
 		cout << tabs << "Press ENTER to exit -> "; // info pre uzivatela
 	}
 	cin.get(); // narozdiel od klasickeho cin zoberie aj ENTER
@@ -326,9 +328,10 @@ string getActualTime() {
 void exitFunc() {
 	system("CLS"); // vycistenie obrazovky
 	if (language == "sk") // dve jazykove varianty
-		cout << "/*--*/ Dovidenia /*--*/" << endl; // rozlucenie
+		cout << "\t\t" << "/*--*/ Dovidenia /*--*/" << endl; // rozlucenie
 	else
-		cout << "/*--*/ Goodbye /*--*/" << endl; // rozlucenie
+		cout << "\t\t" << "/*--*/ Goodbye /*--*/" << endl; // rozlucenie
+	cout << "\t\t" << "->";
 	cin.get();
 	exit(0); // vypnutie programu
 }
@@ -565,7 +568,10 @@ void checkout() {
 		cout << endl;
 		if (language == "sk")
 		{
-			cout << tab << "SUMA" << "\t\t\t" << price; // vypisanie vyslednej sumy
+			stringstream stream;
+			stream << fixed << setprecision(2) << price;
+			string priceString = stream.str();
+			cout << tab << "SUMA" << "\t\t\t" << priceString; // vypisanie vyslednej sumy
 			printEuroSign(); // output eura
 			cout << endl << tab << "Suma bez DPH" << "\t\t" << ceil((price / countTaxDivisor()) * 100) / 100; // vypocet ceny bez DPH
 			printEuroSign(); // output eura
@@ -578,7 +584,7 @@ void checkout() {
 		}
 		else
 		{
-			cout << tab << "SUM" << "\t\t\t" << price; // vypisanie vyslednej sumy
+			cout << tab << "SUM" << "\t\t\t" << ceil(price * 100) / 100; // vypisanie vyslednej sumy
 			cout << "$" << endl; // output eura
 			cout << endl << tab << "SUM without TAX" << "\t\t" << ceil((price / countTaxDivisor()) * 100) / 100; // vypocet ceny bez DPH
 			cout << "$" << endl; // output eura
@@ -624,8 +630,34 @@ void checkout() {
 				cin >> s; // input PINu
 				if (s.length() == 4) // kontrola ci ma PIN styri cislice
 				{
+					regex rgx("(\\d+)");
+					if (!regex_match(s, rgx))
+					{
+						system("CLS"); // vycistenie obrazovky
+						if (language == "sk")
+						{
+							cout << tabs << "Zadali ste neplatny PIN. Skuste to este raz" << endl; // info pre pouzivatela
+						}
+						else
+						{
+							cout << tabs << "Invalid PIN code. Try again" << endl; // info pre pouzivatela
+						}
+						continue; // navrat na zaciatok cyklu
+					}
 					money += price; // pripocitanie penazi na nas ucet
 					numOfCheckouts++;
+					system("CLS");
+					if (language == "sk")
+					{
+						cout << tabs << "Platba prebehla uspesne!!" << endl;
+					}
+					else
+					{
+						cout << tabs << "Payment was successful!!" << endl;
+					}
+					cout << tabs << "-> ";
+					cin.ignore();
+					cin.get();
 					break; // ukoncenie cyklu
 				}
 				else // neplatny PIN
@@ -658,6 +690,21 @@ void checkout() {
 					}
 					cin >> userCash;
 					userCash = checkForComma(userCash); // kontrola ciarok v inpute
+					userCash = checkForDotAndDecimals(userCash);
+					userCash = userCash + "00";
+					regex rgx("(\\d+\\.\\d+)"); // regex pre zistenie ci user zadal float
+					if (!regex_match(userCash, rgx))
+					{
+						if (language == "sk")
+						{
+							cout << tabs << "Zadali ste neplatnu sumu, skuste to znova" << endl;
+						}
+						else
+						{
+							cout << tabs << "You have entered invalid value, try again" << endl;
+						}
+						continue;
+					}
 					try // exception
 					{
 						userCashFloat = stof(userCash); // konverzia stringu na float
@@ -667,7 +714,7 @@ void checkout() {
 					{
 						if (language == "sk")
 						{
-							cout << tabs << "Zadali ste neplatnu cenu, skuste to znova" << endl;
+							cout << tabs << "Zadali ste neplatnu sumu, skuste to znova" << endl;
 						}
 						else
 						{
@@ -675,9 +722,7 @@ void checkout() {
 						}
 						continue;
 					}
-					 
 				}
-				userCash = checkForDotAndDecimals(userCash);
 				float vydavok = userCashFloat - price; // vypocet vydavku
 				if (vydavok >= 0) // overenie ci je vydavok kladny
 				{
@@ -839,27 +884,23 @@ void addProduct() {
 		}
 		cin >> userProductPrice; // input
 		userProductPrice = checkForComma(userProductPrice); // hladanie ciarky v cene a jej nahradenie
+		userProductPrice = checkForDotAndDecimals(userProductPrice);
+		userProductPrice = userProductPrice + "00";
+		regex rgx("(\\d+\\.\\d+)");
+		if (!regex_match(userProductPrice, rgx))
+		{
+			isValid = false;
+		}
 		try // exception
 		{
 			float checkFloat = stof(userProductPrice); // konverzia na float aby sme zistili ci uzivatel zadal platnu cenu
+			stringstream stream;
+			stream << fixed << setprecision(2) << checkFloat;
+			userProductPrice = stream.str();
 		}
 		catch (...) // v pripade neuspesnej konverzie v bloku try
 		{
 			isValid = false; // prepisanie true na false
-		}
-		for (int i = 0; i < userProductPrice.length(); i++)
-		{
-			try
-			{
-				if (userProductPrice[i] == '.' && userProductPrice[i+1] == '.')
-				{
-					isValid = false;
-				}
-			}
-			catch (...)
-			{
-
-			}
 		}
 		fil.open(fileName, ios::in); // otvorenie suboru na citanie - ios::in
 		if (!fil.is_open()) // kontrola ci je subor otvoreny
@@ -872,7 +913,6 @@ void addProduct() {
 			fileCouldntBeClosed(); // chybova funkcia
 		if (!isDuplicate && isValid) // ak nie je duplikat a ak je validny
 		{
-			userProductPrice = checkForDotAndDecimals(userProductPrice);
 			fil.open(fileName, ios::app); // otvorenie suboru na pridavanie - ios::app - append
 			if (!fil.is_open()) // kontrola ci je subor otvoreny
 				fileCouldntBeOpened(); // chybova funkcia
@@ -999,31 +1039,27 @@ void editProduct() {
 			}
 			cin >> userProductPrice; // input
 			userProductPrice = checkForComma(userProductPrice); // kontrola ci zadana cena obsahuje ciarku a jej nahradenie za bodku
+			userProductPrice = checkForDotAndDecimals(userProductPrice); // kontrola ci ma cena desatinne miesta a bodku pre lepsie zobrazenie
+			userProductPrice = userProductPrice + "00";
+			regex rgx("(\\d+\\.\\d+)");
+			if (!regex_match(userProductPrice, rgx))
+			{
+				isValid = false;
+			}
 			try // exception
 			{
 				float checkFloat = stof(userProductPrice); // konverzia stringu na float pre overenie ci uzivatel zadal validnu cenu
+				stringstream stream;
+				stream << fixed << setprecision(2) << checkFloat;
+				userProductPrice = stream.str();
 			}
 			catch (...) // pri neuspesnej koverzii
 			{
 				isValid = false; // prepisane true na false
 			}
-			for (int i = 0; i < userProductPrice.length(); i++)
-			{
-				try
-				{
-					if (userProductPrice[i] == '.' && userProductPrice[i + 1] == '.')
-					{
-						isValid = false;
-					}
-				}
-				catch (...)
-				{
-
-				}
-			}
 			if (isValid) // ak je input validny
 			{
-				userProductPrice = checkForDotAndDecimals(userProductPrice); // kontrola ci ma cena desatinne miesta a bodku pre lepsie zobrazenie
+				
 				fin.open(fileName); // otvorenie suboru
 				if (!fin.is_open()) // kontorola ci je subor otvoreny
 					fileCouldntBeOpened(); // chybova funkcia
@@ -1294,7 +1330,7 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	else
 	{
 		cout << tabs << "Enter new name of your store: "; // info pre uzivatela
-		cin.ignore(); // na ignorovanie noveho riadku. Program by bez toho nefungoval
+		//cin.ignore(); // na ignorovanie noveho riadku. Program by bez toho nefungoval
 		getline(cin, userName); // input celeho riadku nie len jedneho slova
 		cout << tabs << "Enter new adress: "; // info pre uzivatela
 		getline(cin, userAdress); // input celeho riadku nie len jedneho slova
