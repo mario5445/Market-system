@@ -52,9 +52,9 @@ void selectLanguage() {
 	system("CLS"); // vycistenie obrazovky
 	string tabs = "\t\t"; // tabulatory
 	string input; // uskladnenie inputu
-	cout << tabs << "Vyberte jazyk/Select language" << endl << endl;
 	while (true)
 	{
+		cout << tabs << "Vyberte jazyk/Select language" << endl << endl;
 		cout << tabs << "\t[1] Slovencina" << endl;
 		cout << tabs << "\t[2] English" << endl << endl; // info pre pouzivatela
 		cout << tabs << "Vyberte jednu z moznosti/Select one option" << endl;
@@ -73,6 +73,7 @@ void selectLanguage() {
 		else
 		{
 			cout << "Zadali ste neplatnu moznost/You have selected invalid option" << endl;
+			system("CLS");
 			continue;
 		}
 	}
@@ -886,7 +887,7 @@ void addProduct() {
 		userProductPrice = checkForComma(userProductPrice); // hladanie ciarky v cene a jej nahradenie
 		userProductPrice = checkForDotAndDecimals(userProductPrice);
 		userProductPrice = userProductPrice + "00";
-		regex rgx("(\\d+\\.\\d+)");
+		regex rgx("(\\d+\\.\\d+)"); // format ceny
 		if (!regex_match(userProductPrice, rgx))
 		{
 			isValid = false;
@@ -1051,7 +1052,7 @@ void editProduct() {
 				float checkFloat = stof(userProductPrice); // konverzia stringu na float pre overenie ci uzivatel zadal validnu cenu
 				stringstream stream;
 				stream << fixed << setprecision(2) << checkFloat;
-				userProductPrice = stream.str();
+				userProductPrice = stream.str(); // konverzia streamu na string
 			}
 			catch (...) // pri neuspesnej koverzii
 			{
@@ -1059,7 +1060,6 @@ void editProduct() {
 			}
 			if (isValid) // ak je input validny
 			{
-				
 				fin.open(fileName); // otvorenie suboru
 				if (!fin.is_open()) // kontorola ci je subor otvoreny
 					fileCouldntBeOpened(); // chybova funkcia
@@ -1081,7 +1081,7 @@ void editProduct() {
 					string tabs = "\t\t\t"; // cim kratsi nazov tym viac tabulatorov
 					temp << editeProductName << tabs << userProductPrice << endl; // zapisanie produktu do suboru
 				}
-				else if (editeProductName.length() <= 15) 
+				else if (editeProductName.length() <= 11) 
 				{
 					string tabs = "\t\t";
 					temp << editeProductName << tabs << userProductPrice << endl; // zapisanie produktu do suboru
@@ -1195,13 +1195,12 @@ void removeProduct() {
 	}
 	if(fin.is_open()) // kontrola, ci je subor otvoreny
 	{
-		string line; // premenna pre funkciu getline
-		printFileContent(fileName); // vypisanie produktov zo suboru
 		fin.close(); // zatvorenie suboru
 		if (fin.is_open()) // kontorola ci je subor zatvoreny
 			fileCouldntBeClosed();
+		string line; // premenna pre funkciu getline
+		printFileContent(fileName); // vypisanie produktov zo suboru
 		string userInput; // vytvorenie premennej typu string na uskladnenie inputu od pouzivatela
-		
 		if (language == "sk")
 		{
 			cout << endl << tabs << "Zadajte nazov produktu: "; // info pre pouzivatela
