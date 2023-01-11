@@ -257,7 +257,10 @@ void viewStatus() {
 		cout << tabs << "Celkova trzba bez DPH: " << ceil((money / countTaxDivisor()) * 100) / 100; printEuroSign(); // vypocet ceny bez DPH
 		cout << tabs << "Sadzba DPH: " << getData("DPH", "receipt") << endl; // dph sadzba
 		cout << tabs << "Celkova DPH: " << ceil((money - (money / countTaxDivisor())) * 100) / 100; printEuroSign(); // vypocet celkovej DPH
-		cout << tabs << "Priemerna hodnota nakupu: " << ceil((money / numOfCheckouts) * 100) / 100; printEuroSign();
+		if (numOfCheckouts > 0)
+		{
+			cout << tabs << "Priemerna hodnota nakupu: " << ceil((money / numOfCheckouts) * 100) / 100; printEuroSign();
+		}
 		cout << tabs << "Pre opustenie stlacte ENTER -> "; // info pre uzivatela
 	}
 	else
@@ -271,7 +274,10 @@ void viewStatus() {
 		cout << tabs << "Total sales without taxes: " << ceil((money / countTaxDivisor()) * 100) / 100 << "$" << endl; // vypocet ceny bez DPH
 		cout << tabs << "Tax: " << getData("TAX", "receipt") << endl; // dph sadzba
 		cout << tabs << "Total taxes: " << ceil((money - (money / countTaxDivisor())) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
-		cout << tabs << "Average purchase value: " << ceil((money / numOfCheckouts) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
+		if (numOfCheckouts > 0)
+		{
+			cout << tabs << "Average purchase value: " << ceil((money / numOfCheckouts) * 100) / 100 << "$" << endl; // vypocet celkovej DPH
+		}
 		cout << tabs << "Press ENTER to exit -> "; // info pre uzivatela
 	}
 	cin.get(); // narozdiel od klasickeho cin zoberie aj ENTER
