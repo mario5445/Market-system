@@ -1,4 +1,4 @@
-Nazov:	SPS IT
-Adresa:	Kysucke Nove Mesto
-ICO:	123456789
-DPH:	20%
+Nazov:	uni market
+Adresa:	KNM
+ICO:	4578784
+DPH:	10%

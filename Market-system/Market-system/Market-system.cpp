@@ -300,8 +300,9 @@ void mainMenu() {
 		cout << tabs << "\t[5] Zmenit udaje pre nakupne doklady" << endl;
 		cout << tabs << "\t[6] Zmenit prihlasovacie udaje" << endl;
 		cout << tabs << "\t[7] Prehlad trzby" << endl;
-		cout << tabs << "\t[8] Zmena jazyka" << endl;
-		cout << tabs << "\t[9] Exit" << endl << endl;
+		cout << tabs << "\t[8] Prehlad produktov" << endl;
+		cout << tabs << "\t[9] Zmena jazyka" << endl;
+		cout << tabs << "\t[10] Exit" << endl << endl;
 		cout << tabs << "\tPre pokracovanie zvolte jedno z cisel v hranatych zatvorkach" << endl;
 	}
 	else
@@ -316,8 +317,9 @@ void mainMenu() {
 		cout << tabs << "\t[5] Change receipt data" << endl;
 		cout << tabs << "\t[6] Change login data" << endl;
 		cout << tabs << "\t[7] Sales overview" << endl;
-		cout << tabs << "\t[8] Change language" << endl;
-		cout << tabs << "\t[9] Exit" << endl << endl;
+		cout << tabs << "\t[8] Products overview" << endl;
+		cout << tabs << "\t[9] Change language" << endl;
+		cout << tabs << "\t[10] Exit" << endl << endl;
 		cout << tabs << "\tTo continue select one of the numbers in square brackets" << endl;
 	}
 }
@@ -1036,12 +1038,44 @@ void editProduct() {
 			{
 				cout << tabs << "Zadajte novy nazov produktu: "; // info pre uzivatela
 				getline(cin, editeProductName); // input
-				cout << tabs << "Zadajte novu cenu produktu: "; // info pre uzivatela
 			}
 			else
 			{
 				cout << tabs << "Enter new product's name: "; // info pre uzivatela
 				getline(cin, editeProductName); // input
+			}
+			if (containsProduct(editeProductName) && editeProductName != userProductName)
+			{
+				string yesOrNo; // uskladnenie inputu
+				if (language == "sk")
+				{
+					cout << tabs << "Produkt ktory ste zadali sa v zozname uz nachadza" << endl; // info pre uzivatela
+					cout << tabs << "Chcete znova zadat produkt? ano/nie " << endl; // info pre uzivatella
+					cout << tabs << "-> ";
+				}
+				else
+				{
+					cout << tabs << "Product you have entered is already listed" << endl; // info pre uzivatela
+					cout << tabs << "Do you want to enter product again? yes/no " << endl; // info pre uzivatella
+					cout << tabs << "-> ";
+				}
+				cin >> yesOrNo; // innput
+				transform(yesOrNo.begin(), yesOrNo.end(), yesOrNo.begin(), ::toupper); // transform inputu na velke pismena
+				if (yesOrNo == "ANO" || yesOrNo == "YES") // overenie inputu
+				{
+					system("CLS"); // vycistenie obrazovky
+					cin.ignore();
+					continue; // navrat na zaciatok cyklu
+				}
+				else
+					break; // opustenie cyklu
+			}
+			if (language == "sk")
+			{
+				cout << tabs << "Zadajte novu cenu produktu: "; // info pre uzivatela
+			}
+			else
+			{
 				cout << tabs << "Enter new product's price: "; // info pre uzivatela
 			}
 			cin >> userProductPrice; // input
@@ -1346,7 +1380,25 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 		try // exception
 		{
 			cin >> userICO; // input
+			regex rgx("\\d+");
+			bool isValidId = true;
+			if (!regex_match(userICO, rgx))
+			{
+				isValidId = false;
+			}
 			int userICOint = stoi(userICO); // konverzia stringu na int
+			if (!isValidId)
+			{
+				if (language == "sk")
+				{
+					cout << tabs << "Zadali ste nespravne ICO, skuste to znova: "; // info pre uzivatela
+				}
+				else
+				{
+					cout << tabs << "You have entered invalid ID, try again: "; // info pre uzivatela
+				}
+				continue; // navrat na zaciatok cyklu
+			}
 			break; // opustenie cyklu
 		}
 		catch (...) // ak je neuspesna konverzia
@@ -1375,7 +1427,25 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 		try // exception
 		{
 			cin >> userDPH; // input
+			regex rgx("\\d+(\\.)?(\\d+)?");
+			bool isValidtax = true;
+			if (!regex_match(userDPH, rgx))
+			{
+				isValidtax = false;
+			}
 			float userDPHfloat = stof(userDPH); // konverzia stringu na float. Tymto viem zabranit tomu aby nahodou uzivatel nezadal nieco co nechcem
+			if (!isValidtax)
+			{
+				if (language == "sk")
+				{
+					cout << tabs << "Zadali ste nespravnu DPH, skuste to znova" << endl; // info pre uzivatela
+				}
+				else
+				{
+					cout << tabs << "You have entered invalid TAX, try again" << endl; // info pre uzivatela
+				}
+				continue;
+			}
 			break; // opustenie cyklu
 		}
 		catch (...) // ak je neuspesna konverzia
@@ -1394,6 +1464,10 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	temp.open("temp.txt"); // otvorenie suboru
 	if (!temp.is_open()) // kontrola ci je subor otvoreny
 		fileCouldntBeOpened(); // chybova funkcia
+	if (userDPH.back() == '.')
+	{
+		userDPH.pop_back();
+	}
 	if (language == "sk")
 	{
 		temp << "Nazov:\t" << userName << endl; // zapisanie do suboru
@@ -1423,6 +1497,45 @@ void changeReceiptData(bool isEmpty) { // parameter funkcie
 	}
 	system("CLS"); // vycistenie obrazovky
 } 
+
+void printProductsList() {
+	system("CLS");
+	string tabs = "\t\t";
+	string fileName;
+	if (language == "sk")
+	{
+		cout << tabs << "---------------------" << endl;
+		cout << tabs << "- Prehlad produktov -" << endl;
+		cout << tabs << "---------------------" << endl << endl;
+	}
+	else
+	{
+		cout << tabs << "---------------------" << endl;
+		cout << tabs << "- Products overview -" << endl;
+		cout << tabs << "---------------------" << endl << endl;
+	}
+	if (language == "sk")
+	{
+		fileName = "Produkty.txt";
+	}
+	else
+	{
+		fileName = "Products.txt";
+	}
+	printFileContent(fileName);
+	cout << endl;
+	if (language == "sk")
+	{
+		cout << tabs << "Pre navrat do hlavneho menu stlacte prosim ENTER" << endl;
+	}
+	else
+	{
+		cout << tabs << "To continue to main menu press ENTER" << endl;
+	}
+	cout << tabs << "-> ";
+	cin.get();
+	system("CLS");
+}
 
 // zmena prihlasovacich udajov
 void changeLoginData(bool isEmpty) { // parameter
@@ -1615,8 +1728,14 @@ int main()
 			cin.ignore(); // Bez tohto by to nefungovalo
 			try // exception
 			{
+				regex rgx("\\d+");
+				bool isValid = true;
+				if (!regex_match(strmenuInput, rgx))
+				{
+					isValid = false;
+				}
 				intMenuInput = stoi(strmenuInput); // konverzia stringu na int  
-				if (intMenuInput > 0 && intMenuInput <= 9) // kontrola, ci je cislo v intervale od 1 po 9
+				if (intMenuInput > 0 && intMenuInput <= 10 && isValid) // kontrola, ci je cislo v intervale od 1 po 9
 					break; // opustenie cyklu
 				else
 				{
@@ -1761,12 +1880,17 @@ int main()
 			viewStatus(); // zavolanie funkcie na zobrazenie informacii o stave financii
 			continue; // navrat na zaciatok cyklu
 		}
-		else if (intMenuInput == 8) 
+		else if (intMenuInput == 8)
+		{
+			printProductsList();
+			continue; // navrat na zaciatok cyklu
+		}
+		else if (intMenuInput == 9) 
 		{
 			selectLanguage(); // zavolanie funkcie na zmenu jazyka
 			continue; // navrat na zaciatok cyklu
 		}
-		else if (intMenuInput == 9)
+		else if (intMenuInput == 10)
 		{
 			exitFunc(); // zavolanie funkcie na vypnutie programu
 			break; // opustenie cyklu

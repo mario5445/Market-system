@@ -13,6 +13,6 @@ pivo			0.79
 radler			1.00
 mikina			12.50
 caj			1.00
-cipsy			0.80
 zemla			0.20
 medovnik		0.35
+chipsy			0.80
